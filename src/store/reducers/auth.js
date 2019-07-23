@@ -11,6 +11,7 @@ import {
 
 const initialState = {
   token: localStorage.getItem("token"),
+  userId: localStorage.getItem("userId"),
   isAuthenticated: null,
   loading: true,
   user: null
@@ -29,7 +30,6 @@ export default function(state = initialState, action) {
       };
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
-      console.log(payload.token);
       localStorage.setItem("token", "Bearer " + payload.token);
       return {
         ...state,
@@ -43,6 +43,7 @@ export default function(state = initialState, action) {
     case LOGOUT:
     case ACCOUNT_DELETED:
       localStorage.removeItem("token");
+      localStorage.removeItem("userId");
       return {
         ...state,
         token: null,

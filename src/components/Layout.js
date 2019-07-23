@@ -1,11 +1,10 @@
 import React, { Fragment, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-
-import Menus from "./Menus";
-import Logo from "../img/logo.svg";
+import { connect } from "react-redux";
 
 // MUI stuff
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
@@ -22,7 +21,11 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Avatar from "@material-ui/core/Avatar";
+
+import Menus from "./Menus";
+import Logo from "../img/logo.svg";
+import { logout } from "../store/actions/auth";
 
 const drawerWidth = 240;
 
@@ -70,16 +73,42 @@ const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1,
     color: "#fff",
-    fontWeight: "bold",
+    // fontWeight: "bold",
     padding: theme.spacing(1, 1)
   },
   userMenu: {
     color: "#9e9e9e"
+  },
+  menuRoot: {
+    backgroundColor: "#1e88e5",
+    flex: "1 0 auto",
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    zIndex: "1200"
+  },
+  menuFooter: {
+    backgroundColor: "#1565c0",
+    display: "block"
+  },
+  MenuFooterUser: {
+    flexGrow: 1,
+    color: "#fff",
+    padding: theme.spacing(1, 1)
+  },
+  circle: {
+    width: "12px",
+    height: "12px",
+    marginRight: "4px",
+    backgroundColor: "#76ff03",
+    display: "inline-block",
+    marginBottom: "-0.5px",
+    borderRadius: "50%"
   }
 }));
 
 const Layout = props => {
-  const { container } = props;
+  const { container, username, logout } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -104,43 +133,66 @@ const Layout = props => {
   };
 
   const drawer = (
-    <div style={{ backgroundColor: "#1e88e5", height: "100vh" }}>
-      <Toolbar style={{ backgroundColor: "#1565c0" }}>
-        <img src={Logo} width={36} alt="" />{" "}
-        <Typography className={classes.title} variant="button">
-          {"REPORT-SECURITY"}
-        </Typography>
-      </Toolbar>
-
-      <List
-        className={classes.list}
-        subheader={
-          <ListSubheader
-            component="div"
-            id="nested-list-subheader"
-            style={{ color: "#fff" }}
-          >
-            {"Main"}
-          </ListSubheader>
-        }
+    <div className={classes.menuRoot}>
+      <div
+        style={{
+          position: "relative",
+          height: "100%",
+          display: "block"
+        }}
       >
-        {Menus.map(menu => (
-          <ListItem
-            button
-            key={menu.text}
-            component={Link}
-            to={menu.path}
-            selected={menu.path === getLocalPath(props.location.pathname)}
-            color="inherit"
-          >
-            <ListItemIcon className={classes.listIcon}>
-              {menu.icon}
-            </ListItemIcon>
-            {/* <ListItemText primary={menu.text} /> */}
-            <Typography variant="subtitle2">{menu.text}</Typography>
-          </ListItem>
-        ))}
-      </List>
+        <Toolbar style={{ backgroundColor: "#1565c0" }}>
+          <Avatar alt="logo" src={Logo} className={classes.avatar} />
+          <Typography className={classes.title} variant="button">
+            {"REPORT-SECURITY"}
+          </Typography>
+        </Toolbar>
+
+        <List
+          className={classes.list}
+          subheader={
+            <ListSubheader
+              component="div"
+              id="nested-list-subheader"
+              style={{ color: "#fff" }}
+            >
+              {"Main"}
+            </ListSubheader>
+          }
+        >
+          {Menus.map(menu => (
+            <ListItem
+              button
+              key={menu.text}
+              component={Link}
+              to={menu.path}
+              selected={menu.path === getLocalPath(props.location.pathname)}
+              color="inherit"
+            >
+              <ListItemIcon className={classes.listIcon}>
+                {menu.icon}
+              </ListItemIcon>
+              {/* <ListItemText primary={menu.text} /> */}
+              <Typography variant="subtitle2">{menu.text}</Typography>
+            </ListItem>
+          ))}
+        </List>
+      </div>
+      <div className={classes.menuFooter}>
+        {" "}
+        <Toolbar>
+          <Avatar
+            alt="Remy Sharp"
+            src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png"
+            className={classes.avatar}
+          />
+          <Typography className={classes.MenuFooterUser} variant="caption">
+            {username}
+            <br />
+            <span className={classes.circle} /> {"Online"}
+          </Typography>
+        </Toolbar>
+      </div>
     </div>
   );
 
@@ -175,7 +227,7 @@ const Layout = props => {
           onClose={handleClose}
         >
           <MenuItem onClick={handleClose}>My account</MenuItem>
-          <MenuItem onClick={onLogout}>Logout</MenuItem>
+          <MenuItem onClick={logout}>Logout</MenuItem>
         </Menu>
       </div>
     </Fragment>
@@ -251,7 +303,20 @@ const getLocalPath = path => {
 
 Layout.propTypes = {
   // title: PropTypes.string.isRequired,
+  logout: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   container: PropTypes.object
 };
-export default withRouter(Layout);
+
+const mapStateToProps = state => {
+  return {
+    username: state.auth.userId
+  };
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { logout }
+  )(Layout)
+);

@@ -15,7 +15,7 @@ import Container from "@material-ui/core/Container";
 
 import Logo from "../img/logo.svg";
 
-import { login } from "../actions/auth";
+import { login } from "../store/actions/auth";
 
 const useStyles = makeStyles(theme => ({
   "@global": {

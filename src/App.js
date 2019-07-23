@@ -1,15 +1,13 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Provider } from "react-redux";
 import "./App.css";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
 
 import Routes from "./routing/Routes";
-
-import { Provider } from "react-redux";
-import store from "./store";
-
-import { loadUser } from "./actions/auth";
+import store from "./store/store";
+import { loadUser } from "./store/actions/auth";
 
 const theme = createMuiTheme({
   palette: {
@@ -31,7 +29,7 @@ const theme = createMuiTheme({
   }
 });
 
-function App() {
+const App = () => {
   useEffect(() => {
     store.dispatch(loadUser());
   }, []);
@@ -47,6 +45,6 @@ function App() {
       </Provider>
     </MuiThemeProvider>
   );
-}
+};
 
 export default App;

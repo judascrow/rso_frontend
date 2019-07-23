@@ -7,20 +7,18 @@ import Layout from "../components/Layout";
 
 const PrivateRoute = ({
   component: Component,
-  auth: { isAuthenticated, loading },
+  auth: { isAuthenticated },
   ...rest
 }) => (
   <Route
     {...rest}
     render={props =>
-      !isAuthenticated && !loading ? (
-        <Redirect to="/login" />
+      isAuthenticated ? (
+        <Layout>
+          <Component {...props} />
+        </Layout>
       ) : (
-        <div>
-          <Layout>
-            <Component {...props} />
-          </Layout>
-        </div>
+        <Redirect to="/login" />
       )
     }
   />
