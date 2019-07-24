@@ -23,8 +23,13 @@ import Menu from "@material-ui/core/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Avatar from "@material-ui/core/Avatar";
 
+// Components
 import Menus from "./Menus";
+import Breadcrumbs from "./Breadcrumbs";
 import Logo from "../img/logo.svg";
+import Config from "../config";
+
+// Store
 import { logout } from "../store/actions/auth";
 
 const drawerWidth = 240;
@@ -104,6 +109,11 @@ const useStyles = makeStyles(theme => ({
     display: "inline-block",
     marginBottom: "-0.5px",
     borderRadius: "50%"
+  },
+  appFooter: {
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(3),
+    textAlign: "center"
   }
 }));
 
@@ -114,11 +124,6 @@ const Layout = props => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-
-  const onLogout = () => {
-    setAnchorEl(null);
-    //logout();
-  };
 
   const handleMenu = event => {
     setAnchorEl(event.currentTarget);
@@ -144,7 +149,7 @@ const Layout = props => {
         <Toolbar style={{ backgroundColor: "#1565c0" }}>
           <Avatar alt="logo" src={Logo} className={classes.avatar} />
           <Typography className={classes.title} variant="button">
-            {"REPORT-SECURITY"}
+            {Config.siteName}
           </Typography>
         </Toolbar>
 
@@ -198,8 +203,6 @@ const Layout = props => {
 
   const authLinks = (
     <Fragment>
-      <Typography>ผู้ใช้งาน: xxxx</Typography>
-
       <div>
         <IconButton
           aria-label="Account of current user"
@@ -286,7 +289,13 @@ const Layout = props => {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
+        <Breadcrumbs />
         <Paper className={classes.paperRoot}>{props.children}</Paper>
+        <div className={classes.appFooter}>
+          <Typography variant="caption" color="textSecondary">
+            {Config.copyright}
+          </Typography>
+        </div>
       </main>
     </div>
   );

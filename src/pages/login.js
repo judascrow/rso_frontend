@@ -51,11 +51,20 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Login = ({ login, isAuthenticated }) => {
+const Login = ({ login, isAuthenticated, error }) => {
   const classes = useStyles();
 
   if (isAuthenticated) {
     return <Redirect to="/" />;
+  }
+
+  let errorMessage = null;
+  if (error) {
+    errorMessage = (
+      <Typography variant="caption" color="error">
+        {error}
+      </Typography>
+    );
   }
 
   return (
@@ -120,6 +129,7 @@ const Login = ({ login, isAuthenticated }) => {
               >
                 Sign In
               </Button>
+              {errorMessage}
             </Form>
           )}
         />
@@ -133,7 +143,8 @@ Login.propTypes = {
   isAuthenticated: PropTypes.bool
 };
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.auth.isAuthenticated,
+  error: state.auth.error
 });
 export default connect(
   mapStateToProps,
