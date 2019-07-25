@@ -53,7 +53,6 @@ export const login = (username, password) => async dispatch => {
     });
 
     dispatch(loadUser());
-    localStorage.setItem("userId", username);
   } catch (err) {
     const errors = err.response.data;
 

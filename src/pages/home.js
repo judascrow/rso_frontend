@@ -1,8 +1,18 @@
 import React from "react";
 
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+
+const useStyles = makeStyles(theme => ({
+  paperRoot: {
+    padding: theme.spacing(3, 2)
+  }
+}));
+
 const Home = () => {
+  const classes = useStyles();
   return (
-    <div>
+    <Paper className={classes.paperRoot}>
       Home page
       <br />
       <br />
@@ -10,7 +20,7 @@ const Home = () => {
       <br />
       <br />
       <br />
-    </div>
+    </Paper>
   );
 };
 export default Home;

@@ -16,7 +16,6 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
@@ -46,6 +45,7 @@ const useStyles = makeStyles(theme => ({
   },
   appBar: {
     marginLeft: drawerWidth,
+    backgroundColor: "#fff",
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`
     }
@@ -118,7 +118,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Layout = props => {
-  const { container, username, logout } = props;
+  const { container, user, logout } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -192,7 +192,7 @@ const Layout = props => {
             className={classes.avatar}
           />
           <Typography className={classes.MenuFooterUser} variant="caption">
-            {username}
+            {user && user.username}
             <br />
             <span className={classes.circle} /> {"Online"}
           </Typography>
@@ -290,7 +290,8 @@ const Layout = props => {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Breadcrumbs />
-        <Paper className={classes.paperRoot}>{props.children}</Paper>
+        {/* <Paper className={classes.paperRoot}>{props.children}</Paper> */}
+        <div>{props.children}</div>
         <div className={classes.appFooter}>
           <Typography variant="caption" color="textSecondary">
             {Config.copyright}
@@ -319,7 +320,7 @@ Layout.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    username: state.auth.userId
+    user: state.auth.user
   };
 };
 

@@ -45,7 +45,7 @@ const LinkRouter = props => (
   <Link
     {...props}
     component={RouterLink}
-    color="secondary"
+    color="primary"
     style={{ fontSize: fontSize }}
   />
 );

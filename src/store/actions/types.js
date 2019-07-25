@@ -22,3 +22,12 @@ export const DELETE_POST = "DELETE_POST";
 export const ADD_POST = "ADD_POST";
 export const ADD_COMMENT = "ADD_COMMENT";
 export const REMOVE_COMMENT = "REMOVE_COMMENT";
+
+export const GET_USERS = "GET_USERS";
+export const GET_USER = "GET_USER";
+export const ADD_USER = "ADD_USER";
+export const DELETE_USER = "DELETE_USER";
+export const UPDATE_USER = "UPDATE_USER";
+export const FILTER_USERS = "FILTER_USERS";
+export const CLEAR_USERS = "CLEAR_USERS";
+export const USER_ERROR = "USER_ERROR";
