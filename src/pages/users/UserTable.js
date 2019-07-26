@@ -73,13 +73,13 @@ const UserTable = ({
       {
         icon: "edit",
         iconProps: { color: "primary" },
-        tooltip: "Edit User",
+        tooltip: "แก้ไขผู้ใช้งาน",
         onClick: (event, rowData) => onEdit(rowData)
       },
       rowData => ({
         icon: "delete",
         iconProps: { color: "error" },
-        tooltip: "Delete User",
+        tooltip: "ลบผู้ใช้งาน",
         onClick: (event, rowData) => onDelete(rowData)
       })
     ],
@@ -87,7 +87,7 @@ const UserTable = ({
       actionsColumnIndex: -1,
       pageSize: 5,
       headerStyle: {
-        backgroundColor: "#03a9f4",
+        backgroundColor: "#29b6f6",
         color: "#fff"
       }
     }
@@ -113,13 +113,13 @@ const UserTable = ({
       ) : (
         <LinearProgress />
       )}
-      <Tooltip title="เพิ่มข้อมูล" aria-label="Add">
+      <Tooltip title="เพิ่มผู้ใช้งาน" aria-label="Add">
         <Fab
           color="primary"
           aria-label="Add"
           className={classes.fab}
           component={Link}
-          to="/users/add"
+          to="/user/add"
         >
           <AddIcon />
         </Fab>

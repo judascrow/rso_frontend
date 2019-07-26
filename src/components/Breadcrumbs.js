@@ -14,7 +14,7 @@ const fontSize = "14px";
 const breadcrumbNameMap = {
   "/": "หน้าหลัก",
   "/user": "ผู้ใช้งาน",
-  "/user/add": "สร้างผู้ใช้งาน",
+  "/user/add": "เพิ่มผู้ใช้งาน",
   "/test": "ทดสอบ"
 };
 

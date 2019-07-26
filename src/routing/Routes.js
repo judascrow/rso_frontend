@@ -10,6 +10,7 @@ import PrivateRoute from "./PrivateRoute";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import User from "../pages/users/User";
+import UserAdd from "../pages/users/UserAdd";
 
 const useStyles = makeStyles(theme => ({
   paperRoot: {
@@ -33,6 +34,7 @@ const Routes = () => {
         <Route exact path="/login" component={Login} />
         <PrivateRoute exact path="/" component={Home} />
         <PrivateRoute exact path="/user" component={User} />
+        <PrivateRoute path="/user/add" component={UserAdd} />
         <PrivateRoute exact path="/test" component={Test} />
         <Route component={NotFound} />
       </Switch>

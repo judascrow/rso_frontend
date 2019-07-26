@@ -31,3 +31,7 @@ export const UPDATE_USER = "UPDATE_USER";
 export const FILTER_USERS = "FILTER_USERS";
 export const CLEAR_USERS = "CLEAR_USERS";
 export const USER_ERROR = "USER_ERROR";
+
+export const GET_COURTS = "GET_COURTS";
+export const COURTS_ERROR = "COURTS_ERROR";
+export const SET_LOADING = "SET_LOADING";
