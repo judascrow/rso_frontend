@@ -252,7 +252,8 @@ const IntegrationReactSelect = ({
   error,
   info,
   onChange,
-  options
+  options,
+  defaultValue
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -293,6 +294,8 @@ const IntegrationReactSelect = ({
           name={name}
           value={value}
           onChange={onChange}
+          maxMenuHeight={150}
+          defaultValue={defaultValue}
         />
       </NoSsr>
     </Fragment>

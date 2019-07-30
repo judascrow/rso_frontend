@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { getCourts } from "../../store/actions/court";
 import Select from "../../components/SelectOption";
 
-const CourtSelectOptions = ({ getCourts, court: { courts, loading } }) => {
+const CourtSelectOptions = ({
+  getCourts,
+  court: { courts, loading },
+  onChange,
+  value,
+  labelName
+}) => {
   useEffect(() => {
     getCourts();
     // eslint-disable-next-line
   }, []);
-
-  const [court, setCourt] = useState(null);
 
   const options =
     !loading &&
@@ -20,21 +24,12 @@ const CourtSelectOptions = ({ getCourts, court: { courts, loading } }) => {
       label: court.name
     }));
 
-  const handleChangeSingle = e => {
-    if (e != null) {
-      setCourt(e.value);
-    } else {
-      setCourt(0);
-    }
-  };
-
   return (
     <Select
-      name={"court"}
-      labelName={"ศาล"}
-      // value={single}
-      onChange={handleChangeSingle}
       options={options}
+      onChange={onChange}
+      value={value}
+      labelName={labelName}
     />
   );
 };

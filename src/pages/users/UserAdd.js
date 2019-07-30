@@ -1,5 +1,7 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { Fragment, useState } from "react";
+import { Link, withRouter } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -8,9 +10,10 @@ import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
-
 import Select from "../../components/SelectOption";
+
 import CourtSelectOptions from "../courts/CourtSelectOptions";
+import { createUser } from "../../store/actions/user";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,42 +37,60 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const UserAdd = () => {
+const UserAdd = ({ createUser, history }) => {
   const classes = useStyles();
 
   //   console.log(CourtSelectOptions());
   //const options = CourtSelectOptions();
 
-  const [user, setUser] = useState({
+  const [formData, setFormData] = useState({
     username: "",
     password: "",
-    email: "",
     first_name: "",
     last_name: "",
-    court: 0
+    role_id: 2,
+    court_id: 0
   });
 
-  const { username, email, first_name, last_name } = user;
+  const { username, password, first_name, last_name, role_id } = formData;
 
-  const onChange = e => setUser({ ...user, [e.target.name]: e.target.value });
+  const onChange = e =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const [single, setSingle] = useState(null);
+  const [courtOptions, setCourtOptions] = useState(null);
 
-  function handleChangeSingle(e) {
-    //   setSingle(e);
-    //   if (e !== null) {
-    //     setUser({ ...user, court: e.value });
-    //   } else {
-    //     setUser({ ...user, court: 0 });
-    //   }
-  }
+  const handleChangeCourt = e => {
+    setCourtOptions(e);
+    if (e !== null) {
+      setFormData({ ...formData, court_id: e.value });
+    } else {
+      setFormData({ ...formData, court_id: 0 });
+    }
+  };
+
+  const roleOptionsList = [
+    { value: 2, label: "เจ้าหน้าที่ศาล" },
+    { value: 1, label: "ผู้ดูแลระบบ" }
+  ];
+
+  const [roleOptions, setRoleOptions] = useState(null);
+
+  const handleChangeRole = e => {
+    setRoleOptions(e);
+    if (e !== null) {
+      setFormData({ ...formData, role_id: e.value });
+    } else {
+      setFormData({ ...formData, role_id: 0 });
+    }
+  };
 
   const onSubmit = e => {
-    //   e.preventDefault();
-    //   user.password = user.username;
-    //   addUser(user);
-    //   props.history.push("/users");
-    //   setAlert("บันทึกข้อมูลเรียบร้อยแล้ว", "success");
+    e.preventDefault();
+    console.log(formData);
+    createUser(formData, history);
+    // addUser(user);
+    // props.history.push("/users");
+    // setAlert("บันทึกข้อมูลเรียบร้อยแล้ว", "success");
   };
 
   return (
@@ -106,14 +127,14 @@ const UserAdd = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 required
+                type="password"
                 id="password"
                 name="password"
                 label="Password"
                 fullWidth
                 autoComplete="close"
-                defaultValue="รหัสผ่านตั้งต้นจะเหมือนกับ Username"
+                value={password}
                 onChange={onChange}
-                disabled
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -140,7 +161,7 @@ const UserAdd = () => {
                 onChange={onChange}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <TextField
                 id="email"
                 name="email"
@@ -150,16 +171,23 @@ const UserAdd = () => {
                 value={email}
                 onChange={onChange}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} sm={6}>
-              <CourtSelectOptions />
-              {/* <Select
+              <CourtSelectOptions
                 name={"court"}
                 labelName={"ศาล"}
-                value={single}
-                onChange={handleChangeSingle}
-                options={options}
-              /> */}
+                value={courtOptions}
+                onChange={handleChangeCourt}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Select
+                options={roleOptionsList}
+                onChange={handleChangeRole}
+                //value={roleOptions}
+                labelName={"ระดับของผู้ใช้งาน"}
+                defaultValue={roleOptionsList[0]}
+              />
             </Grid>
 
             <Grid item xs={12} />
@@ -190,4 +218,11 @@ const UserAdd = () => {
   );
 };
 
-export default UserAdd;
+UserAdd.propTypes = {
+  createUser: PropTypes.func.isRequired
+};
+
+export default connect(
+  null,
+  { createUser }
+)(withRouter(UserAdd));

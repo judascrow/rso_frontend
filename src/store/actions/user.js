@@ -47,3 +47,45 @@ export const deleteUser = id => async dispatch => {
     });
   }
 };
+
+// Create or update profile
+export const createUser = (
+  formData,
+  history,
+  edit = false
+) => async dispatch => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+
+    const res = await axios.post(
+      `http://localhost:8080/api/v1/users/`,
+      formData,
+      config
+    );
+
+    dispatch({
+      type: GET_USERS,
+      payload: res.data
+    });
+
+    // dispatch(setAlert(edit ? 'Profile Updated' : 'Profile Created', 'success'));
+
+    if (!edit) {
+      history.push("/user");
+    }
+  } catch (err) {
+    const errors = err.response.data;
+
+    if (errors) {
+      errors.forEach(error => dispatch(error.Message));
+    }
+
+    dispatch({
+      type: USER_ERROR
+    });
+  }
+};

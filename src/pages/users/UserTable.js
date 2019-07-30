@@ -58,7 +58,12 @@ const UserTable = ({
         field: "first_name",
         render: rowData => rowData.first_name + " " + rowData.last_name
       },
-      { title: "Court", field: "court.name" }
+      { title: "Court", field: "court.name" },
+      {
+        title: "Status",
+        field: "status",
+        render: rowData => (rowData.status == "A" ? "Active" : "Inactive")
+      }
     ],
     data: [
       { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 },
