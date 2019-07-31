@@ -9,7 +9,9 @@ const CourtSelectOptions = ({
   court: { courts, loading },
   onChange,
   value,
-  labelName
+  labelName,
+  reactSelectID,
+  isClearable
 }) => {
   useEffect(() => {
     getCourts();
@@ -30,6 +32,8 @@ const CourtSelectOptions = ({
       onChange={onChange}
       value={value}
       labelName={labelName}
+      reactSelectID={reactSelectID}
+      isClearable={isClearable}
     />
   );
 };

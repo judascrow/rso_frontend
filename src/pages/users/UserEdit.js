@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -13,7 +13,7 @@ import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
 import Select from "../../components/SelectOption";
 
 import CourtSelectOptions from "../courts/CourtSelectOptions";
-import { createUser } from "../../store/actions/user";
+import { getUser, updateUser } from "../../store/actions/user";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,7 +49,13 @@ const statusOptionsList = [
   { value: "I", label: "Inactive - ปิดใช้งาน" }
 ];
 
-const UserAdd = ({ createUser, history }) => {
+const UserEdit = ({
+  getUser,
+  updateUser,
+  user: { userdata, loading },
+  history,
+  match
+}) => {
   const classes = useStyles();
 
   const [formData, setFormData] = useState({
@@ -57,12 +63,36 @@ const UserAdd = ({ createUser, history }) => {
     password: "",
     first_name: "",
     last_name: "",
-    role_id: 2,
+    role_id: 0,
     court_id: 0,
     status: ""
   });
 
-  const { username, password, first_name, last_name } = formData;
+  useEffect(() => {
+    getUser(match.params.id);
+
+    setFormData({
+      username: loading || !userdata.username ? "" : userdata.username,
+      password: loading || !userdata.password ? "" : userdata.password,
+      first_name: loading || !userdata.first_name ? "" : userdata.first_name,
+      last_name: loading || !userdata.last_name ? "" : userdata.last_name,
+      role_id: loading || !userdata.role_id ? 0 : userdata.role_id,
+      court_id: loading || !userdata.court_id ? 0 : userdata.court_id,
+      status: loading || !userdata.status ? "" : userdata.status
+    });
+    console.log(userdata);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, getUser]);
+
+  const {
+    username,
+    password,
+    first_name,
+    last_name,
+    role_id,
+    court_id,
+    status
+  } = formData;
 
   const onChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -98,7 +128,7 @@ const UserAdd = ({ createUser, history }) => {
   const onSubmit = e => {
     e.preventDefault();
     console.log(formData);
-    createUser(formData, history);
+    updateUser(formData, history);
     // addUser(user);
     // props.history.push("/users");
     // setAlert("บันทึกข้อมูลเรียบร้อยแล้ว", "success");
@@ -177,7 +207,7 @@ const UserAdd = ({ createUser, history }) => {
                 reactSelectID={"court"}
                 name={"court"}
                 labelName={"ศาล"}
-                value={courtOptions}
+                value={court_id}
                 onChange={handleChangeCourt}
                 isClearable={true}
               />
@@ -187,7 +217,7 @@ const UserAdd = ({ createUser, history }) => {
                 reactSelectID={"role"}
                 options={roleOptionsList}
                 onChange={handleChangeRole}
-                //value={roleOptions}
+                value={1}
                 labelName={"ระดับของผู้ใช้งาน"}
                 defaultValue={roleOptionsList[0]}
                 isClearable={false}
@@ -195,10 +225,11 @@ const UserAdd = ({ createUser, history }) => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Select
+                name="status"
                 reactSelectID={"status"}
                 options={statusOptionsList}
                 onChange={handleChangeStatus}
-                //value={roleOptions}
+                value={statusOptionsList.find(s => s.value === status)}
                 labelName={"สถานะ"}
                 defaultValue={statusOptionsList[0]}
                 isClearable={false}
@@ -232,11 +263,15 @@ const UserAdd = ({ createUser, history }) => {
   );
 };
 
-UserAdd.propTypes = {
-  createUser: PropTypes.func.isRequired
+UserEdit.propTypes = {
+  updateUser: PropTypes.func.isRequired,
+  getUser: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
 };
-
+const mapStateToProps = state => ({
+  user: state.user
+});
 export default connect(
-  null,
-  { createUser }
-)(withRouter(UserAdd));
+  mapStateToProps,
+  { updateUser, getUser }
+)(withRouter(UserEdit));

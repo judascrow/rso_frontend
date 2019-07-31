@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -10,6 +10,7 @@ import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import Tooltip from "@material-ui/core/Tooltip";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import Chip from "@material-ui/core/Chip";
 
 import { getUsers, deleteUser } from "../../store/actions/user";
 
@@ -46,8 +47,8 @@ const UserTable = ({
   };
 
   const onEdit = rowData => {
-    //history.push(`/users/edit/` + rowData.id);
-    alert(rowData.id);
+    history.push(`/user/edit/` + rowData.id);
+    // alert(rowData.id);
   };
 
   const [state] = useState({
@@ -62,16 +63,12 @@ const UserTable = ({
       {
         title: "Status",
         field: "status",
-        render: rowData => (rowData.status == "A" ? "Active" : "Inactive")
-      }
-    ],
-    data: [
-      { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 },
-      {
-        name: "Zerya Betül",
-        surname: "Baran",
-        birthYear: 2017,
-        birthCity: 34
+        render: rowData =>
+          rowData.status === "A" ? (
+            <Chip label="Active" color="secondary" size="small" />
+          ) : (
+            <Chip label="Inactive" size="small" />
+          )
       }
     ],
     actions: [
@@ -90,11 +87,12 @@ const UserTable = ({
     ],
     options: {
       actionsColumnIndex: -1,
-      pageSize: 5,
+      pageSize: 10,
       headerStyle: {
         backgroundColor: "#29b6f6",
         color: "#fff"
-      }
+      },
+      padding: "dense"
     }
   });
 
@@ -146,4 +144,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { getUsers, deleteUser }
-)(UserTable);
+)(withRouter(UserTable));

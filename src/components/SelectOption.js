@@ -253,7 +253,9 @@ const IntegrationReactSelect = ({
   info,
   onChange,
   options,
-  defaultValue
+  defaultValue,
+  reactSelectID,
+  isClearable
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -279,7 +281,7 @@ const IntegrationReactSelect = ({
         <Select
           classes={classes}
           styles={selectStyles}
-          inputId="react-select-single"
+          inputId={reactSelectID}
           TextFieldProps={{
             label: labelName,
             InputLabelProps: {
@@ -287,7 +289,7 @@ const IntegrationReactSelect = ({
               shrink: true
             }
           }}
-          isClearable
+          isClearable={isClearable}
           menuPlacement="auto"
           options={selectOptions}
           components={components}

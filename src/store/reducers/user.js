@@ -11,7 +11,7 @@ import {
 
 const initialState = {
   users: [],
-  usersdata: null,
+  userdata: null,
   loading: true,
   error: {}
 };
@@ -19,6 +19,13 @@ const initialState = {
 export default (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
+    case GET_USER:
+    case UPDATE_USER:
+      return {
+        ...state,
+        userdata: payload,
+        loading: false
+      };
     case GET_USERS:
       return {
         ...state,
@@ -26,26 +33,26 @@ export default (state = initialState, action) => {
         // userdata: "",
         loading: false
       };
-    case GET_USER:
-      return {
-        ...state,
-        userdata: payload,
-        loading: false
-      };
+    // case GET_USER:
+    //   return {
+    //     ...state,
+    //     userdata: payload,
+    //     loading: false
+    //   };
     case ADD_USER:
       return {
         ...state,
         users: [payload, ...state.users],
         loading: false
       };
-    case UPDATE_USER:
-      return {
-        ...state,
-        users: state.users.map(user =>
-          user._id === payload._id ? payload : user
-        ),
-        loading: false
-      };
+    // case UPDATE_USER:
+    //   return {
+    //     ...state,
+    //     users: state.users.map(user =>
+    //       user._id === payload._id ? payload : user
+    //     ),
+    //     loading: false
+    //   };
     case DELETE_USER:
       return {
         ...state,
