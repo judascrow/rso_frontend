@@ -6,12 +6,13 @@ import {
   UPDATE_USER,
   FILTER_USERS,
   USER_ERROR,
-  CLEAR_USERS
+  CLEAR_USERS,
+  CLEAR_USER
 } from "../actions/types";
 
 const initialState = {
   users: [],
-  userdata: null,
+  userdata: "",
   loading: true,
   error: {}
 };
@@ -30,7 +31,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         users: payload,
-        // userdata: "",
+        userdata: "",
         loading: false
       };
     // case GET_USER:
@@ -66,6 +67,12 @@ export default (state = initialState, action) => {
         filtered: null,
         error: null,
         current: null
+      };
+    case CLEAR_USER:
+      return {
+        ...state,
+        userdata: null,
+        loading: false
       };
     case FILTER_USERS:
       return {

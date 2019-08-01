@@ -134,7 +134,7 @@ export const createUser = (
 };
 
 // Update User
-export const updateUser = (formData, history) => async dispatch => {
+export const updateUser = (id, formData, history) => async dispatch => {
   const config = {
     headers: {
       "Content-Type": "application/json"
@@ -143,7 +143,7 @@ export const updateUser = (formData, history) => async dispatch => {
 
   try {
     const res = await axios.put(
-      `http://localhost:8080/api/v1/users/${formData.id}`,
+      `http://localhost:8080/api/v1/users/${id}`,
       formData,
       config
     );

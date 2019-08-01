@@ -1,5 +1,6 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -21,22 +22,37 @@ const useStyles = makeStyles(theme => ({
 
 const NotFound = () => {
   const classes = useStyles();
-  return <Paper className={classes.paperRoot}>PAGE NOT PUUND</Paper>;
+  return <Paper className={classes.paperRoot}>PAGE NOT FOUND</Paper>;
 };
 const Test = () => {
   const classes = useStyles();
   return <Paper className={classes.paperRoot}>PAGE TEST</Paper>;
 };
 
-const Routes = () => {
+const Routes = ({ user }) => {
+  let AdminRoute = false;
+  if (user && user.roleID === 1) {
+    AdminRoute = true;
+  }
+
   return (
     <div>
       <Switch>
         <Route exact path="/login" component={Login} />
         <PrivateRoute exact path="/" component={Home} />
-        <PrivateRoute exact path="/user" component={User} />
-        <PrivateRoute path="/user/add" component={UserAdd} />
-        <PrivateRoute path="/user/edit/:id" component={UserEdit} />
+        <PrivateRoute
+          exact
+          path="/user"
+          component={AdminRoute ? User : NotFound}
+        />
+        <PrivateRoute
+          path="/user/add"
+          component={AdminRoute ? UserAdd : NotFound}
+        />
+        <PrivateRoute
+          path="/user/edit/:id"
+          component={AdminRoute ? UserEdit : NotFound}
+        />
         <PrivateRoute exact path="/test" component={Test} />
         <Route component={NotFound} />
       </Switch>
@@ -44,4 +60,17 @@ const Routes = () => {
   );
 };
 
-export default Routes;
+//export default Routes;
+
+const mapStateToProps = state => {
+  return {
+    user: state.auth.user
+  };
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    null
+  )(Routes)
+);

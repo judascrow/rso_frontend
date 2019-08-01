@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
+import PersonAddOutlinedIcon from "@material-ui/icons/PersonOutlined";
 import Select from "../../components/SelectOption";
 
 import CourtSelectOptions from "../courts/CourtSelectOptions";
@@ -80,9 +80,19 @@ const UserEdit = ({
       court_id: loading || !userdata.court_id ? 0 : userdata.court_id,
       status: loading || !userdata.status ? "" : userdata.status
     });
-    console.log(userdata);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, getUser]);
+    // eslint-disable-next-line
+  }, [
+    loading,
+    getUser,
+    match.params.id,
+    userdata.username,
+    userdata.password,
+    userdata.first_name,
+    userdata.last_name,
+    userdata.role_id,
+    userdata.court_id,
+    userdata.status
+  ]);
 
   const {
     username,
@@ -93,14 +103,13 @@ const UserEdit = ({
     court_id,
     status
   } = formData;
-
   const onChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   // Court Options
-  const [courtOptions, setCourtOptions] = useState(null);
+  //const [courtOptions, setCourtOptions] = useState(null);
   const handleChangeCourt = e => {
-    setCourtOptions(e);
+    //setCourtOptions(e);
     if (e !== null) {
       setFormData({ ...formData, court_id: e.value });
     } else {
@@ -128,7 +137,7 @@ const UserEdit = ({
   const onSubmit = e => {
     e.preventDefault();
     console.log(formData);
-    updateUser(formData, history);
+    updateUser(match.params.id, formData, history);
     // addUser(user);
     // props.history.push("/users");
     // setAlert("บันทึกข้อมูลเรียบร้อยแล้ว", "success");
@@ -147,7 +156,7 @@ const UserEdit = ({
             className={classes.titleIcon}
             fontSize="large"
           />
-          {"เพิ่มผู้ใช้งาน"}
+          {"แก้ไขผู้ใช้งาน"}
         </Typography>
 
         <form className={classes.form} onSubmit={onSubmit}>
@@ -162,6 +171,9 @@ const UserEdit = ({
                 autoComplete="close"
                 value={username}
                 onChange={onChange}
+                InputProps={{
+                  readOnly: true
+                }}
                 autoFocus
               />
             </Grid>
@@ -217,7 +229,7 @@ const UserEdit = ({
                 reactSelectID={"role"}
                 options={roleOptionsList}
                 onChange={handleChangeRole}
-                value={1}
+                value={roleOptionsList.find(s => s.value === role_id)}
                 labelName={"ระดับของผู้ใช้งาน"}
                 defaultValue={roleOptionsList[0]}
                 isClearable={false}

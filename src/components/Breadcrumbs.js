@@ -53,7 +53,9 @@ const LinkRouter = props => (
 
 const RouterBreadcrumbs = props => {
   const { classes, location } = props;
-  const pathnames = location.pathname.split("/").filter(x => x);
+  const getPathnames = location.pathname.split("/").filter(x => x);
+  const pathnames =
+    getPathnames.length < 3 ? getPathnames : getPathnames.splice(0, 2);
 
   return (
     <div className={classes.root}>

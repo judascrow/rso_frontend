@@ -30,7 +30,7 @@ const CourtSelectOptions = ({
     <Select
       options={options}
       onChange={onChange}
-      value={value}
+      value={options.find(s => s.value === value)}
       labelName={labelName}
       reactSelectID={reactSelectID}
       isClearable={isClearable}
