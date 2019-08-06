@@ -165,22 +165,26 @@ const Layout = props => {
             </ListSubheader>
           }
         >
-          {Menus.map(menu => (
-            <ListItem
-              button
-              key={menu.text}
-              component={Link}
-              to={menu.path}
-              selected={menu.path === getLocalPath(props.location.pathname)}
-              color="inherit"
-            >
-              <ListItemIcon className={classes.listIcon}>
-                {menu.icon}
-              </ListItemIcon>
-              {/* <ListItemText primary={menu.text} /> */}
-              <Typography variant="subtitle2">{menu.text}</Typography>
-            </ListItem>
-          ))}
+          {Menus.map(menu =>
+            user && menu.roleID.indexOf(user.roleID) > -1 ? (
+              <ListItem
+                button
+                key={menu.text}
+                component={Link}
+                to={menu.path}
+                selected={menu.path === getLocalPath(props.location.pathname)}
+                color="inherit"
+              >
+                <ListItemIcon className={classes.listIcon}>
+                  {menu.icon}
+                </ListItemIcon>
+                {/* <ListItemText primary={menu.text} /> */}
+                <Typography variant="subtitle2">{menu.text}</Typography>
+              </ListItem>
+            ) : (
+              ""
+            )
+          )}
         </List>
       </div>
       <div className={classes.menuFooter}>

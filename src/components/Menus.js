@@ -1,7 +1,8 @@
 import React from "react";
-import MailIcon from "@material-ui/icons/MailOutlined";
+import AssignmentIndIcon from "@material-ui/icons/AssignmentIndOutlined";
 import HomeIcon from "@material-ui/icons/HomeOutlined";
 import PeopleIcon from "@material-ui/icons/PeopleOutlined";
+import ReceiptIcon from "@material-ui/icons/ReceiptOutlined";
 
 const Menus = [
   {
@@ -9,21 +10,28 @@ const Menus = [
     text: "หน้าหลัก",
     icon: <HomeIcon />,
     path: "/",
-    roleLevel: 2
+    roleID: [1, 2]
   },
   {
     id: 2,
     text: "จัดการผู้ใช้งาน",
     icon: <PeopleIcon />,
     path: "/user",
-    roleLevel: 1
+    roleID: [1]
   },
   {
     id: 3,
-    text: "ทดสอบ",
-    icon: <MailIcon />,
-    path: "/test",
-    roleLevel: 2
+    text: "เจ้าหน้าที่รักษาความปลอดภัย",
+    icon: <AssignmentIndIcon />,
+    path: "/secperson",
+    roleID: [2]
+  },
+  {
+    id: 4,
+    text: "รายงานการตรวจรับ",
+    icon: <ReceiptIcon />,
+    path: "/courtreport",
+    roleID: [2]
   }
 ];
 

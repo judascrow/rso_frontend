@@ -16,7 +16,10 @@ const breadcrumbNameMap = {
   "/user": "ผู้ใช้งาน",
   "/user/add": "เพิ่มผู้ใช้งาน",
   "/user/edit": "แก้ไขผู้ใช้งาน",
-  "/test": "ทดสอบ"
+  "/secperson": "เจ้าหน้าที่รักษาความปลอดภัย",
+  "/secperson/add": "เพิ่มข้อมูล",
+  "/secperson/edit": "แก้ไขข้อมูล",
+  "/courtreport": "รายงานการตรวจรับฯ"
 };
 
 const styles = theme => ({

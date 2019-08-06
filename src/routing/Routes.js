@@ -13,6 +13,11 @@ import Login from "../pages/Login";
 import User from "../pages/users/User";
 import UserAdd from "../pages/users/UserAdd";
 import UserEdit from "../pages/users/UserEdit";
+import SecPersonTable from "../pages/secPersons/SecPersonTable";
+import SecPersonAdd from "../pages/secPersons/SecPersonAdd";
+import SecPersonEdit from "../pages/secPersons/SecPersonEdit";
+
+import CourtReportTable from "../pages/courtReport/CourtReportTable";
 
 const useStyles = makeStyles(theme => ({
   paperRoot: {
@@ -53,7 +58,10 @@ const Routes = ({ user }) => {
           path="/user/edit/:id"
           component={AdminRoute ? UserEdit : NotFound}
         />
-        <PrivateRoute exact path="/test" component={Test} />
+        <PrivateRoute exact path="/secperson" component={SecPersonTable} />
+        <PrivateRoute path="/secperson/add" component={SecPersonAdd} />
+        <PrivateRoute path="/secperson/edit/:id" component={SecPersonEdit} />
+        <PrivateRoute exact path="/courtreport" component={CourtReportTable} />
         <Route component={NotFound} />
       </Switch>
     </div>
