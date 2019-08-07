@@ -21,16 +21,16 @@ const Menus = [
   },
   {
     id: 3,
-    text: "เจ้าหน้าที่รักษาความปลอดภัย",
-    icon: <AssignmentIndIcon />,
-    path: "/secperson",
+    text: "รายงานการตรวจรับ",
+    icon: <ReceiptIcon />,
+    path: "/courtreport",
     roleID: [2]
   },
   {
     id: 4,
-    text: "รายงานการตรวจรับ",
-    icon: <ReceiptIcon />,
-    path: "/courtreport",
+    text: "เจ้าหน้าที่รักษาความปลอดภัย",
+    icon: <AssignmentIndIcon />,
+    path: "/secperson",
     roleID: [2]
   }
 ];

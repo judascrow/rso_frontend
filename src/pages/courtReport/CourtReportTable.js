@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import AssignmentIndIcon from "@material-ui/icons/AssignmentIndOutlined";
+import ReceiptIcon from "@material-ui/icons/ReceiptOutlined";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -13,6 +13,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import Chip from "@material-ui/core/Chip";
 
 import { getCourtReports } from "../../store/actions/courtReport";
+import ConvertMonth from "../../components/ConvertMonth";
 
 const useStyles = makeStyles(theme => ({
   titleIcon: {
@@ -53,16 +54,21 @@ const CourtReportTable = ({
 
   const [state] = useState({
     columns: [
-      { title: "Period", field: "period" },
       {
-        title: "Status",
+        title: "เดือน - ปี",
+        field: "year",
+        lookup: { 2019: "2019", 2020: "2020" },
+        render: rowData => ConvertMonth(rowData.month) + " " + rowData.year
+      },
+      {
+        title: "สถานะการส่งรายงาน",
         field: "status",
-        lookup: { S: "Send Success", W: "Wait Send" },
+        lookup: { S: "ส่งเรียบร้อยแล้ว", W: "รอส่ง" },
         render: rowData =>
           rowData.status !== "W" ? (
-            <Chip label="Send Success" color="secondary" size="small" />
+            <Chip label="ส่งเรียบร้อยแล้ว" color="secondary" size="small" />
           ) : (
-            <Chip label="Wait Send" size="small" />
+            <Chip label="รอส่ง" size="small" />
           )
       }
     ],
@@ -70,15 +76,21 @@ const CourtReportTable = ({
       {
         icon: "edit",
         iconProps: { color: "primary" },
-        tooltip: "แก้ไขผู้ใช้งาน",
+        tooltip: "แก้ไขรายงาน",
         onClick: (event, rowData) => onEdit(rowData)
-      }
-      // rowData => ({
-      //   icon: "delete",
-      //   iconProps: { color: "error" },
-      //   tooltip: "ลบผู้ใช้งาน",
-      //   onClick: (event, rowData) => onDelete(rowData)
-      // })
+      },
+      rowData => ({
+        icon: "send",
+        iconProps: { color: "secondary" },
+        tooltip: "ส่งรายงาน",
+        onClick: (event, rowData) => onDelete(rowData)
+      }),
+      rowData => ({
+        icon: "delete",
+        iconProps: { color: "error" },
+        tooltip: "ลบรายงาน",
+        onClick: (event, rowData) => onDelete(rowData)
+      })
     ],
     options: {
       filtering: true,
@@ -94,8 +106,8 @@ const CourtReportTable = ({
 
   const TableTitle = (
     <div>
-      <AssignmentIndIcon className={classes.titleIcon} fontSize="large" />
-      {"รายงานการตรวจรับพัศดุจ้างเหมารักษาความปลอดภัยประจำเดือน"}
+      <ReceiptIcon className={classes.titleIcon} fontSize="large" />
+      {"รายงานการตรวจรับพัสดุจ้างเหมารักษาความปลอดภัยประจำเดือน"}
     </div>
   );
 
@@ -112,13 +124,13 @@ const CourtReportTable = ({
       ) : (
         <LinearProgress />
       )}
-      <Tooltip title="เพิ่มเจ้าหน้าที่รักษาความปลอดภัย" aria-label="Add">
+      <Tooltip title="เพิ่มบัญชีวันทำงานฯ" aria-label="Add">
         <Fab
           color="primary"
           aria-label="Add"
           className={classes.fab}
           component={Link}
-          to="/courtreports/add"
+          to="/courtreport/add"
         >
           <AddIcon />
         </Fab>

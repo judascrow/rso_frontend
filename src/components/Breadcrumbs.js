@@ -19,7 +19,8 @@ const breadcrumbNameMap = {
   "/secperson": "เจ้าหน้าที่รักษาความปลอดภัย",
   "/secperson/add": "เพิ่มข้อมูล",
   "/secperson/edit": "แก้ไขข้อมูล",
-  "/courtreport": "รายงานการตรวจรับฯ"
+  "/courtreport": "รายงานการตรวจรับฯ",
+  "/courtreport/add": "เพิ่มข้อมูล"
 };
 
 const styles = theme => ({

@@ -91,45 +91,45 @@ export const getCourtReports = () => async dispatch => {
 // //   }
 // // };
 
-// // createSecPerson
-// export const createSecPerson = (formData, history) => async dispatch => {
-//   try {
-//     const config = {
-//       headers: {
-//         "Content-Type": "application/json"
-//       }
-//     };
+// createCourtReport
+export const createCourtReport = (formData, history) => async dispatch => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
 
-//     const res = await axios.post(
-//       `http://localhost:8080/api/v1/sec_persons/`,
-//       formData,
-//       config
-//     );
+    const res = await axios.post(
+      `http://localhost:8080/api/v1/court_reports/`,
+      formData,
+      config
+    );
 
-//     dispatch({
-//       type: GET_SEC_PERSONS,
-//       payload: res.data
-//     });
+    dispatch({
+      type: GET_COURT_REPORTS,
+      payload: res.data
+    });
 
-//     // dispatch(setAlert(edit ? 'Profile Updated' : 'Profile Created', 'success'));
+    // dispatch(setAlert(edit ? 'Profile Updated' : 'Profile Created', 'success'));
 
-//     history.push("/secperson");
-//   } catch (err) {
-//     const errors = err.response.data;
+    history.push("/courtreport");
+  } catch (err) {
+    const errors = err.response.data;
 
-//     if (errors) {
-//       //errors.forEach(error => dispatch(error.Message));
-//       dispatch({
-//         type: SEC_PERSON_ERROR,
-//         error: errors.message
-//       });
-//     }
+    if (errors) {
+      //errors.forEach(error => dispatch(error.Message));
+      dispatch({
+        type: COURT_REPORT_ERROR,
+        error: errors.message
+      });
+    }
 
-//     dispatch({
-//       type: SEC_PERSON_ERROR
-//     });
-//   }
-// };
+    dispatch({
+      type: COURT_REPORT_ERROR
+    });
+  }
+};
 
 // // Update SecPerson
 // export const updateSecPerson = (id, formData, history) => async dispatch => {

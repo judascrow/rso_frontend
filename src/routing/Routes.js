@@ -18,6 +18,7 @@ import SecPersonAdd from "../pages/secPersons/SecPersonAdd";
 import SecPersonEdit from "../pages/secPersons/SecPersonEdit";
 
 import CourtReportTable from "../pages/courtReport/CourtReportTable";
+import CourtReportAdd from "../pages/courtReport/CourtReportAdd";
 
 const useStyles = makeStyles(theme => ({
   paperRoot: {
@@ -62,6 +63,7 @@ const Routes = ({ user }) => {
         <PrivateRoute path="/secperson/add" component={SecPersonAdd} />
         <PrivateRoute path="/secperson/edit/:id" component={SecPersonEdit} />
         <PrivateRoute exact path="/courtreport" component={CourtReportTable} />
+        <PrivateRoute path="/courtreport/add" component={CourtReportAdd} />
         <Route component={NotFound} />
       </Switch>
     </div>
