@@ -1,16 +1,23 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles, fade } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 // import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import InputBase from "@material-ui/core/InputBase";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentIndOutlined";
 
+import ReactSelect from "react-select";
 import Select from "../../components/SelectOption";
 import {
   YearOptionsList,
@@ -24,6 +31,7 @@ import { TextField } from "formik-material-ui";
 import * as Yup from "yup";
 
 import { createCourtReport } from "../../store/actions/courtReport";
+import { getSecPersons } from "../../store/actions/secPerson";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,8 +64,67 @@ const SignupSchema = Yup.object().shape({
     .max(31, "จำนวนวันต้องไม่เกิน 31 วัน")
 });
 
-const CourtReportAdd = ({ createCourtReport, history }) => {
+/* table sec_person */
+const StyledTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: "#29b6f6",
+    color: theme.palette.common.white
+  },
+  body: {
+    fontSize: 14
+  }
+}))(TableCell);
+
+const BootstrapInput = withStyles(theme => ({
+  root: {
+    "label + &": {
+      marginTop: theme.spacing(3)
+    }
+  },
+  input: {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: theme.palette.common.white,
+    border: "1px solid #ced4da",
+    fontSize: 16,
+    width: "20px",
+    padding: "5px 12px",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"'
+    ].join(","),
+    "&:focus": {
+      boxShadow: `${fade(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
+      borderColor: theme.palette.primary.main
+    }
+  }
+}))(InputBase);
+
+/* table sec_person */
+
+const CourtReportAdd = ({
+  createCourtReport,
+  history,
+  secPerson: { secPersons, loading },
+  getSecPersons
+}) => {
   const classes = useStyles();
+
+  useEffect(() => {
+    getSecPersons();
+    // eslint-disable-next-line
+  }, []);
+  console.log(secPersons);
 
   return (
     <Fragment>
@@ -185,6 +252,59 @@ const CourtReportAdd = ({ createCourtReport, history }) => {
                     component={Select}
                   />
                 </Grid>
+                <Grid item xs={12}>
+                  <Table className={classes.table} size="small">
+                    {/* <colgroup>
+                      <col style={{ width: "5%" }} />
+                      <col style={{ width: "25%" }} />
+                      <col style={{ width: "20%" }} />
+                      <col style={{ width: "45%" }} />
+                    </colgroup> */}
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell>ลำดับ</StyledTableCell>
+                        <StyledTableCell>
+                          ชื่อเจ้าหน้าที่รักษาความปลอดภัย
+                        </StyledTableCell>
+                        <StyledTableCell>ประเภท</StyledTableCell>
+                        <StyledTableCell align="right">
+                          Calories
+                        </StyledTableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {!loading &&
+                        secPersons !== null &&
+                        secPersons.data.map((row, i) => (
+                          <TableRow key={i}>
+                            <TableCell component="th" scope="row">
+                              {i + 1}
+                            </TableCell>
+                            <TableCell component="th" scope="row">
+                              {row.full_name}
+                            </TableCell>
+                            <TableCell>
+                              <ReactSelect
+                                options={[
+                                  { value: 1, label: "ทำงาน 7 วัน/สัปดาห์" },
+                                  { value: 2, label: "ทำงาน 6 วัน/สัปดาห์" }
+                                ]}
+                              />
+                            </TableCell>
+                            <TableCell align="right">
+                              {" "}
+                              <Field
+                                name={`test${i}`}
+                                component={BootstrapInput}
+                                margin="dense"
+                                hiddenLabel
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </Grid>
                 <Grid item xs={12} />
               </Grid>
               <Grid item xs={12}>
@@ -216,10 +336,15 @@ const CourtReportAdd = ({ createCourtReport, history }) => {
 };
 
 CourtReportAdd.propTypes = {
-  createCourtReport: PropTypes.func.isRequired
+  createCourtReport: PropTypes.func.isRequired,
+  getSecPersons: PropTypes.func.isRequired
 };
 
+const mapStateToProps = state => ({
+  secPerson: state.secPerson
+});
+
 export default connect(
-  null,
-  { createCourtReport }
+  mapStateToProps,
+  { createCourtReport, getSecPersons }
 )(withRouter(CourtReportAdd));
