@@ -158,7 +158,7 @@ const CourtReportAdd = ({
           {({ errors, touched, setFieldValue }) => (
             <Form className={classes.form} noValidate>
               <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={3}>
                   <Field
                     name="year"
                     reactSelectID={"year"}
@@ -170,7 +170,7 @@ const CourtReportAdd = ({
                     component={Select}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={3}>
                   <Field
                     name="month"
                     reactSelectID={"month"}
@@ -184,7 +184,7 @@ const CourtReportAdd = ({
                     component={Select}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={3}>
                   <Field
                     name="work_7day"
                     reactSelectID={"work_7day"}
@@ -196,7 +196,7 @@ const CourtReportAdd = ({
                     component={Select}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={3}>
                   <Field
                     name="work_6day"
                     reactSelectID={"work_6day"}
@@ -208,7 +208,7 @@ const CourtReportAdd = ({
                     component={Select}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={3}>
                   <Field
                     name="total_shuffle"
                     reactSelectID={"total_shuffle"}
@@ -222,7 +222,7 @@ const CourtReportAdd = ({
                     component={Select}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={3}>
                   <Field
                     name="total_shuffle_except"
                     reactSelectID={"total_shuffle_except"}
@@ -236,7 +236,7 @@ const CourtReportAdd = ({
                     component={Select}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={3}>
                   <Field
                     name="total_shuffle_absence"
                     reactSelectID={"total_shuffle_absence"}
@@ -245,7 +245,7 @@ const CourtReportAdd = ({
                       setFieldValue("total_shuffle_absence", value.value)
                     }
                     labelName={
-                      "จำนวนผลัดที่ขาดทำงาน (ไม่รวมวันที่มีผู่มาทำงานแทน)"
+                      "จำนวนผลัดที่ขาดทำงาน (ไม่รวมวันที่มีผู้มาทำงานแทน)"
                     }
                     defaultValue={DateNoOptionsList[0]}
                     isClearable={false}
@@ -268,7 +268,10 @@ const CourtReportAdd = ({
                         </StyledTableCell>
                         <StyledTableCell>ประเภท</StyledTableCell>
                         <StyledTableCell align="right">
-                          Calories
+                          จำนวนวันทำงาน/เดือน
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          จำนวนวันที่มาทำงาน/เดือน
                         </StyledTableCell>
                       </TableRow>
                     </TableHead>
@@ -289,14 +292,30 @@ const CourtReportAdd = ({
                                   { value: 1, label: "ทำงาน 7 วัน/สัปดาห์" },
                                   { value: 2, label: "ทำงาน 6 วัน/สัปดาห์" }
                                 ]}
+                                defaultValue={1}
                               />
                             </TableCell>
                             <TableCell align="right">
                               {" "}
                               <Field
-                                name={`test${i}`}
+                                name={`test2${i}`}
                                 component={BootstrapInput}
                                 margin="dense"
+                                inputProps={{
+                                  maxLength: 2
+                                }}
+                                hiddenLabel
+                              />
+                            </TableCell>
+                            <TableCell align="right">
+                              {" "}
+                              <Field
+                                name={`test3${i}`}
+                                component={BootstrapInput}
+                                margin="dense"
+                                inputProps={{
+                                  maxLength: 2
+                                }}
                                 hiddenLabel
                               />
                             </TableCell>
