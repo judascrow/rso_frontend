@@ -9,7 +9,7 @@ import {
 import setAuthToken from "../../utils/setAuthToken";
 
 // Get SecPersons
-export const getSecPersons = () => async dispatch => {
+export const getSecPersons = (status = "") => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
@@ -21,10 +21,12 @@ export const getSecPersons = () => async dispatch => {
       }
     };
 
-    const res = await axios.get(
-      "http://localhost:8080/api/v1/sec_persons/",
-      config
-    );
+    let url = "http://localhost:8080/api/v1/sec_persons/";
+    if (status !== "") {
+      url = `http://localhost:8080/api/v1/sec_persons/?status=${status}`;
+    }
+
+    const res = await axios.get(url, config);
 
     dispatch({
       type: GET_SEC_PERSONS,

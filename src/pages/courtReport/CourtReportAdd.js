@@ -26,12 +26,17 @@ import {
   MapMonth
 } from "../../components/DateComponents/DateOptionsList";
 
-import { Formik, Field, Form } from "formik";
+import { Formik, Field, Form, FieldArray } from "formik";
 import { TextField } from "formik-material-ui";
 import * as Yup from "yup";
 
 import { createCourtReport } from "../../store/actions/courtReport";
 import { getSecPersons } from "../../store/actions/secPerson";
+
+const optionsType = [
+  { value: 1, label: "ทำงาน 7 วัน/สัปดาห์" },
+  { value: 2, label: "ทำงาน 6 วัน/สัปดาห์" }
+];
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -87,8 +92,8 @@ const BootstrapInput = withStyles(theme => ({
     backgroundColor: theme.palette.common.white,
     border: "1px solid #ced4da",
     fontSize: 16,
-    width: "20px",
-    padding: "5px 12px",
+    // width: "20px",
+    padding: "5px 5px",
     transition: theme.transitions.create(["border-color", "box-shadow"]),
     // Use the system font instead of the default Roboto font.
     fontFamily: [
@@ -121,7 +126,7 @@ const CourtReportAdd = ({
   const classes = useStyles();
 
   useEffect(() => {
-    getSecPersons();
+    getSecPersons("A");
     // eslint-disable-next-line
   }, []);
   console.log(secPersons);
@@ -146,7 +151,8 @@ const CourtReportAdd = ({
             work_6day: 0,
             total_shuffle: 0,
             total_shuffle_except: 0,
-            total_shuffle_absence: 0
+            total_shuffle_absence: 0,
+            day_month: ["31"]
           }}
           validationSchema={SignupSchema}
           onSubmit={(values, { setSubmitting }) => {
@@ -262,65 +268,176 @@ const CourtReportAdd = ({
                     </colgroup> */}
                     <TableHead>
                       <TableRow>
-                        <StyledTableCell>ลำดับ</StyledTableCell>
-                        <StyledTableCell>
+                        <StyledTableCell align="center" width="20px">
+                          ลำดับ
+                        </StyledTableCell>
+                        <StyledTableCell align="center" width="300px">
                           ชื่อเจ้าหน้าที่รักษาความปลอดภัย
                         </StyledTableCell>
-                        <StyledTableCell>ประเภท</StyledTableCell>
-                        <StyledTableCell align="right">
-                          จำนวนวันทำงาน/เดือน
+                        <StyledTableCell align="center" width="200px">
+                          ประเภท
                         </StyledTableCell>
-                        <StyledTableCell align="right">
-                          จำนวนวันที่มาทำงาน/เดือน
+                        <StyledTableCell align="center" width="100">
+                          จำนวนวันทำงานในรอบเดือน
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          จำนวนวันที่มาทำงาน
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          จำนวนผลัดที่มีผู้มาทำงานแทน
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          ว/ด/ป ที่มีผู้มาทำงานแทน(ชื่อ)
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          จำนวนผลัดที่ขาดงาน
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          ว/ด/ป ที่ขาดงาน
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          จำนวนชั่วโมงที่มาทำงานไม่ครบ 12 ชม./ผลัด
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          ว/ด/ป ที่มาทำงานไม่ครบ 12 ชม./ผลัด
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          หมายเหตุ
                         </StyledTableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {!loading &&
-                        secPersons !== null &&
-                        secPersons.data.map((row, i) => (
-                          <TableRow key={i}>
-                            <TableCell component="th" scope="row">
-                              {i + 1}
-                            </TableCell>
-                            <TableCell component="th" scope="row">
-                              {row.full_name}
-                            </TableCell>
-                            <TableCell>
-                              <ReactSelect
-                                options={[
-                                  { value: 1, label: "ทำงาน 7 วัน/สัปดาห์" },
-                                  { value: 2, label: "ทำงาน 6 วัน/สัปดาห์" }
-                                ]}
-                                defaultValue={1}
-                              />
-                            </TableCell>
-                            <TableCell align="right">
-                              {" "}
-                              <Field
-                                name={`test2${i}`}
-                                component={BootstrapInput}
-                                margin="dense"
-                                inputProps={{
-                                  maxLength: 2
-                                }}
-                                hiddenLabel
-                              />
-                            </TableCell>
-                            <TableCell align="right">
-                              {" "}
-                              <Field
-                                name={`test3${i}`}
-                                component={BootstrapInput}
-                                margin="dense"
-                                inputProps={{
-                                  maxLength: 2
-                                }}
-                                hiddenLabel
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                      <FieldArray
+                        name="friends"
+                        render={arrayHelpers => (
+                          <Fragment>
+                            {!loading &&
+                              secPersons !== null &&
+                              secPersons.data.map((row, i) => (
+                                <TableRow key={i}>
+                                  <TableCell component="th" scope="row">
+                                    {i + 1}
+                                  </TableCell>
+                                  <TableCell component="th" scope="row">
+                                    {row.full_name}
+                                  </TableCell>
+                                  <TableCell>
+                                    <ReactSelect
+                                      name={`type${i}`}
+                                      options={optionsType}
+                                      defaultValue={optionsType[0]}
+                                    />
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {" "}
+                                    <Field
+                                      type="number"
+                                      name={`day_month.${i}`}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      inputProps={{
+                                        maxLength: 2,
+                                        min: 0,
+                                        max: 31,
+                                        step: 1
+                                      }}
+                                      onInput={e => {
+                                        e.target.value = Math.max(
+                                          0,
+                                          parseInt(e.target.value)
+                                        )
+                                          .toString()
+                                          .slice(0, 2);
+                                      }}
+                                      hiddenlabel="true"
+                                    />
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {" "}
+                                    <Field
+                                      name={`day_month_work${i}`}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      inputProps={{
+                                        maxLength: 2
+                                      }}
+                                      hiddenlabel="true"
+                                    />
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <Field
+                                      name={`shuffle${i}`}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      inputProps={{
+                                        maxLength: 2
+                                      }}
+                                      hiddenlabel="true"
+                                    />
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <Field
+                                      name={`shuffle_date_name${i}`}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      hiddenlabel="true"
+                                      multiline="true"
+                                    />
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <Field
+                                      name={`shuffle_Absence${i}`}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      inputProps={{
+                                        maxLength: 2
+                                      }}
+                                      hiddenlabel="true"
+                                    />
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <Field
+                                      name={`shuffle_Absence_date${i}`}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      hiddenlabel="true"
+                                      multiline="true"
+                                    />
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <Field
+                                      name={`h_not_12${i}`}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      inputProps={{
+                                        maxLength: 2
+                                      }}
+                                      hiddenlabel="true"
+                                    />
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <Field
+                                      name={`h_not_12_date_h${i}`}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      hiddenlabel="true"
+                                      multiline="true"
+                                    />
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <Field
+                                      name={`remark${i}`}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      hiddenlabel="true"
+                                      multiline="true"
+                                    />
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </Fragment>
+                        )}
+                      />
                     </TableBody>
                   </Table>
                 </Grid>
