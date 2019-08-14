@@ -129,7 +129,6 @@ const CourtReportAdd = ({
     getSecPersons("A");
     // eslint-disable-next-line
   }, []);
-  console.log(secPersons);
 
   return (
     <Fragment>
@@ -144,6 +143,7 @@ const CourtReportAdd = ({
           {"เพิ่มบัญชีวันทำงานของเจ้าหน้าที่รักษาความปลอดภัย"}
         </Typography>
         <Formik
+          // enableReinitialize
           initialValues={{
             year: YearOptionsList[0].value,
             month: MonthOptionsList[0].value,
@@ -151,8 +151,24 @@ const CourtReportAdd = ({
             work_6day: 0,
             total_shuffle: 0,
             total_shuffle_except: 0,
-            total_shuffle_absence: 0,
-            day_month: ["31"]
+            total_shuffle_absence: 1,
+            court_report_sec_persons:
+              // !loading &&
+              // secPersons !== null &&
+              // secPersons.data.map((row, i) => ({
+              //   day_month: 0
+              // }))
+              [
+                {
+                  day_month: 0
+                },
+                {
+                  day_month: 1
+                },
+                {
+                  day_month: 2
+                }
+              ]
           }}
           validationSchema={SignupSchema}
           onSubmit={(values, { setSubmitting }) => {
@@ -161,7 +177,14 @@ const CourtReportAdd = ({
             console.log(values);
           }}
         >
-          {({ errors, touched, setFieldValue }) => (
+          {({
+            errors,
+            touched,
+            setFieldValue,
+            values,
+            handleChange,
+            handleBlur
+          }) => (
             <Form className={classes.form} noValidate>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={3}>
@@ -308,7 +331,7 @@ const CourtReportAdd = ({
                     </TableHead>
                     <TableBody>
                       <FieldArray
-                        name="friends"
+                        name="court_report_sec_persons"
                         render={arrayHelpers => (
                           <Fragment>
                             {!loading &&
@@ -332,7 +355,14 @@ const CourtReportAdd = ({
                                     {" "}
                                     <Field
                                       type="number"
-                                      name={`day_month.${i}`}
+                                      id={`court_report_sec_persons[${i}].day_month`}
+                                      name={`court_report_sec_persons[${i}].day_month`}
+                                      value={
+                                        values.court_report_sec_persons[i]
+                                          .day_month
+                                      }
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
                                       component={BootstrapInput}
                                       margin="dense"
                                       inputProps={{
@@ -381,7 +411,7 @@ const CourtReportAdd = ({
                                       component={BootstrapInput}
                                       margin="dense"
                                       hiddenlabel="true"
-                                      multiline="true"
+                                      multiline
                                     />
                                   </TableCell>
                                   <TableCell align="center">
@@ -401,7 +431,7 @@ const CourtReportAdd = ({
                                       component={BootstrapInput}
                                       margin="dense"
                                       hiddenlabel="true"
-                                      multiline="true"
+                                      multiline
                                     />
                                   </TableCell>
                                   <TableCell align="center">
@@ -421,7 +451,7 @@ const CourtReportAdd = ({
                                       component={BootstrapInput}
                                       margin="dense"
                                       hiddenlabel="true"
-                                      multiline="true"
+                                      multiline
                                     />
                                   </TableCell>
                                   <TableCell align="center">
@@ -430,7 +460,7 @@ const CourtReportAdd = ({
                                       component={BootstrapInput}
                                       margin="dense"
                                       hiddenlabel="true"
-                                      multiline="true"
+                                      multiline
                                     />
                                   </TableCell>
                                 </TableRow>
