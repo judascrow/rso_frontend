@@ -3,7 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { makeStyles, withStyles, fade } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -14,7 +14,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import InputBase from "@material-ui/core/InputBase";
+
 import AssignmentIndIcon from "@material-ui/icons/AssignmentIndOutlined";
 
 import ReactSelect from "react-select";
@@ -22,12 +22,11 @@ import Select from "../../components/SelectOption";
 import {
   YearOptionsList,
   MonthOptionsList,
-  DateNoOptionsList,
-  MapMonth
+  DateNoOptionsList
 } from "../../components/DateComponents/DateOptionsList";
+import BootstrapInput from "../../components/BootstrapInput";
 
 import { Formik, Field, Form, FieldArray } from "formik";
-import { TextField } from "formik-material-ui";
 import * as Yup from "yup";
 
 import { createCourtReport } from "../../store/actions/courtReport";
@@ -80,42 +79,18 @@ const StyledTableCell = withStyles(theme => ({
   }
 }))(TableCell);
 
-const BootstrapInput = withStyles(theme => ({
-  root: {
-    "label + &": {
-      marginTop: theme.spacing(3)
-    }
-  },
-  input: {
-    borderRadius: 4,
-    position: "relative",
-    backgroundColor: theme.palette.common.white,
-    border: "1px solid #ced4da",
-    fontSize: 16,
-    // width: "20px",
-    padding: "5px 5px",
-    transition: theme.transitions.create(["border-color", "box-shadow"]),
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"'
-    ].join(","),
-    "&:focus": {
-      boxShadow: `${fade(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
-      borderColor: theme.palette.primary.main
-    }
-  }
-}))(InputBase);
-
 /* table sec_person */
+
+const GetTotalDayFromMonth = month => {
+  const array30 = ["04", "06", "09", "11"];
+  let day = 31;
+  if (array30.indexOf(month) > -1) {
+    day = 30;
+  } else if (month === "02") {
+    day = 28;
+  }
+  return day;
+};
 
 const CourtReportAdd = ({
   createCourtReport,
@@ -143,32 +118,22 @@ const CourtReportAdd = ({
           {"เพิ่มบัญชีวันทำงานของเจ้าหน้าที่รักษาความปลอดภัย"}
         </Typography>
         <Formik
-          // enableReinitialize
+          enableReinitialize
           initialValues={{
             year: YearOptionsList[0].value,
-            month: MonthOptionsList[0].value,
-            work_7day: 0,
+            month: MonthOptionsList[new Date().getUTCMonth() - 1].value,
+            work_7day: GetTotalDayFromMonth(new Date().getUTCMonth() - 1),
             work_6day: 0,
             total_shuffle: 0,
             total_shuffle_except: 0,
-            total_shuffle_absence: 1,
+            total_shuffle_absence: 0,
             court_report_sec_persons:
-              // !loading &&
-              // secPersons !== null &&
-              // secPersons.data.map((row, i) => ({
-              //   day_month: 0
-              // }))
-              [
-                {
-                  day_month: 0
-                },
-                {
-                  day_month: 1
-                },
-                {
-                  day_month: 2
-                }
-              ]
+              !loading &&
+              secPersons !== null &&
+              secPersons.data.map((secPerson, i) => ({
+                full_name: secPerson.full_name,
+                day_month: 0
+              }))
           }}
           validationSchema={SignupSchema}
           onSubmit={(values, { setSubmitting }) => {
@@ -204,7 +169,13 @@ const CourtReportAdd = ({
                     name="month"
                     reactSelectID={"month"}
                     options={MonthOptionsList}
-                    onChange={value => setFieldValue("month", value.value)}
+                    onChange={value => {
+                      setFieldValue("month", value.value);
+                      setFieldValue(
+                        "work_7day",
+                        GetTotalDayFromMonth(value.value)
+                      );
+                    }}
                     labelName={"เดือน"}
                     defaultValue={
                       MonthOptionsList[new Date().getUTCMonth() - 1]
@@ -220,7 +191,10 @@ const CourtReportAdd = ({
                     options={DateNoOptionsList}
                     onChange={value => setFieldValue("work_7day", value.value)}
                     labelName={"จำนวนวันทำงาน ประเภท 12 ชั่วโมง / 7 วัน"}
-                    defaultValue={DateNoOptionsList[0]}
+                    defaultValue={DateNoOptionsList.find(
+                      s => s.value === GetTotalDayFromMonth(values.month)
+                    )}
+                    value={DateNoOptionsList[values.work_7day]}
                     isClearable={false}
                     component={Select}
                   />
@@ -334,9 +308,8 @@ const CourtReportAdd = ({
                         name="court_report_sec_persons"
                         render={arrayHelpers => (
                           <Fragment>
-                            {!loading &&
-                              secPersons !== null &&
-                              secPersons.data.map((row, i) => (
+                            {values.court_report_sec_persons &&
+                              values.court_report_sec_persons.map((row, i) => (
                                 <TableRow key={i}>
                                   <TableCell component="th" scope="row">
                                     {i + 1}
@@ -359,7 +332,9 @@ const CourtReportAdd = ({
                                       name={`court_report_sec_persons[${i}].day_month`}
                                       value={
                                         values.court_report_sec_persons[i]
-                                          .day_month
+                                          ? values.court_report_sec_persons[i]
+                                              .day_month
+                                          : 0
                                       }
                                       onChange={handleChange}
                                       onBlur={handleBlur}
@@ -503,7 +478,8 @@ const CourtReportAdd = ({
 
 CourtReportAdd.propTypes = {
   createCourtReport: PropTypes.func.isRequired,
-  getSecPersons: PropTypes.func.isRequired
+  getSecPersons: PropTypes.func.isRequired,
+  secPerson: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({

@@ -38,13 +38,13 @@ const SecPersonTable = ({
     getSecPersons();
   }, [getSecPersons]);
 
-  const onDelete = async rowData => {
-    // var r = confirm("You want to delete " + rowData.username); //eslint-disable-line
-    // if (r) {
-    //   await deleteUser(rowData.id);
-    //   await getUsers();
-    // }
-  };
+  // const onDelete = async rowData => {
+  //   // var r = confirm("You want to delete " + rowData.username); //eslint-disable-line
+  //   // if (r) {
+  //   //   await deleteUser(rowData.id);
+  //   //   await getUsers();
+  //   // }
+  // };
 
   const onEdit = rowData => {
     history.push(`/secperson/edit/` + rowData.id);

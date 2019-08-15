@@ -30,10 +30,6 @@ const NotFound = () => {
   const classes = useStyles();
   return <Paper className={classes.paperRoot}>PAGE NOT FOUND</Paper>;
 };
-const Test = () => {
-  const classes = useStyles();
-  return <Paper className={classes.paperRoot}>PAGE TEST</Paper>;
-};
 
 const Routes = ({ user }) => {
   let AdminRoute = false;
