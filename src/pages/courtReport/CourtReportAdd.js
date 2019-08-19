@@ -31,6 +31,7 @@ import * as Yup from "yup";
 
 import { createCourtReport } from "../../store/actions/courtReport";
 import { getSecPersons } from "../../store/actions/secPerson";
+import { TextField } from "@material-ui/core";
 
 const optionsType = [
   { value: 1, label: "ทำงาน 7 วัน/สัปดาห์" },
@@ -56,6 +57,9 @@ const useStyles = makeStyles(theme => ({
   titleIcon: {
     verticalAlign: "middle",
     margin: theme.spacing(1)
+  },
+  tableCell: {
+    padding: 5
   }
 }));
 
@@ -72,7 +76,8 @@ const SignupSchema = Yup.object().shape({
 const StyledTableCell = withStyles(theme => ({
   head: {
     backgroundColor: "#29b6f6",
-    color: theme.palette.common.white
+    color: theme.palette.common.white,
+    padding: 5
   },
   body: {
     fontSize: 14
@@ -123,23 +128,39 @@ const CourtReportAdd = ({
             year: YearOptionsList[0].value,
             month: MonthOptionsList[new Date().getUTCMonth() - 1].value,
             work_7day: GetTotalDayFromMonth(new Date().getUTCMonth() - 1),
-            work_6day: 0,
-            total_shuffle: 0,
-            total_shuffle_except: 0,
-            total_shuffle_absence: 0,
+            work_6day: 25,
+            // total_shuffle: 0,
+            // total_shuffle_except: 0,
+            // total_shuffle_absence: 0,
+            reporter_name: "",
+            reporter_position: "",
+            inspector_name: "",
+            inspector_position: "",
             court_report_sec_persons:
               !loading &&
               secPersons !== null &&
               secPersons.data.map((secPerson, i) => ({
-                full_name: secPerson.full_name,
-                day_month: 0
+                sec_person_name: secPerson.full_name,
+                type: 1,
+                day_month_work: 0,
+                shuffle: 0,
+                shuffle_date_name: "",
+                shuffle_Absence: 0,
+                shuffle_Absence_date: "",
+                h_not_12: 0,
+                h_not_12_date_h: "",
+                remark: ""
               }))
           }}
           validationSchema={SignupSchema}
           onSubmit={(values, { setSubmitting }) => {
-            // same shape as initial values
             setSubmitting(false);
-            console.log(values);
+            var r = confirm("คุณต้องการบันทึกข้อมูลใช่หรือไม่ ? "); //eslint-disable-line
+            if (r) {
+              console.log(values);
+
+              //createCourtReport(values, history);
+            }
           }}
         >
           {({
@@ -175,6 +196,7 @@ const CourtReportAdd = ({
                         "work_7day",
                         GetTotalDayFromMonth(value.value)
                       );
+                      setFieldValue("work_6day", 25);
                     }}
                     labelName={"เดือน"}
                     defaultValue={
@@ -206,12 +228,13 @@ const CourtReportAdd = ({
                     options={DateNoOptionsList}
                     onChange={value => setFieldValue("work_6day", value.value)}
                     labelName={"จำนวนวันทำงาน ประเภท 12 ชั่วโมง / 6 วัน"}
-                    defaultValue={DateNoOptionsList[0]}
+                    defaultValue={DateNoOptionsList[25]}
+                    value={DateNoOptionsList[values.work_6day]}
                     isClearable={false}
                     component={Select}
                   />
                 </Grid>
-                <Grid item xs={12} sm={3}>
+                {/* <Grid item xs={12} sm={3}>
                   <Field
                     name="total_shuffle"
                     reactSelectID={"total_shuffle"}
@@ -255,6 +278,51 @@ const CourtReportAdd = ({
                     component={Select}
                   />
                 </Grid>
+                <Grid item xs={12} sm={3} /> */}
+                <Grid item xs={12} sm={3}>
+                  <Field
+                    id="reporter_name"
+                    name="reporter_name"
+                    label={"ผู้รายงาน"}
+                    component={TextField}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <Field
+                    id="reporter_position"
+                    name="reporter_position"
+                    label={"ตำแหน่งของผู้รายงาน"}
+                    component={TextField}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <Field
+                    id="inspector_name"
+                    name="inspector_name"
+                    label={"ผู้ตรวจสอบ"}
+                    component={TextField}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <Field
+                    id="inspector_position"
+                    name="inspector_position"
+                    label={"ตำแหน่งของผู้ตรวจสอบ"}
+                    component={TextField}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    fullWidth
+                  />
+                </Grid>
                 <Grid item xs={12}>
                   <Table className={classes.table} size="small">
                     {/* <colgroup>
@@ -265,34 +333,34 @@ const CourtReportAdd = ({
                     </colgroup> */}
                     <TableHead>
                       <TableRow>
-                        <StyledTableCell align="center" width="20px">
+                        <StyledTableCell align="center" width="10px">
                           ลำดับ
                         </StyledTableCell>
-                        <StyledTableCell align="center" width="300px">
+                        <StyledTableCell align="center" width="250px">
                           ชื่อเจ้าหน้าที่รักษาความปลอดภัย
                         </StyledTableCell>
                         <StyledTableCell align="center" width="200px">
                           ประเภท
                         </StyledTableCell>
-                        <StyledTableCell align="center" width="100">
-                          จำนวนวันทำงานในรอบเดือน
-                        </StyledTableCell>
-                        <StyledTableCell align="center">
+                        <StyledTableCell align="center" width="60px">
                           จำนวนวันที่มาทำงาน
                         </StyledTableCell>
-                        <StyledTableCell align="center">
+                        <StyledTableCell align="center" width="60px">
                           จำนวนผลัดที่มีผู้มาทำงานแทน
+                        </StyledTableCell>
+                        <StyledTableCell align="center" width="60px">
+                          (เป็นกรณีควงเวร กี่ผลัด)
                         </StyledTableCell>
                         <StyledTableCell align="center">
                           ว/ด/ป ที่มีผู้มาทำงานแทน(ชื่อ)
                         </StyledTableCell>
-                        <StyledTableCell align="center">
+                        <StyledTableCell align="center" width="60px">
                           จำนวนผลัดที่ขาดงาน
                         </StyledTableCell>
                         <StyledTableCell align="center">
                           ว/ด/ป ที่ขาดงาน
                         </StyledTableCell>
-                        <StyledTableCell align="center">
+                        <StyledTableCell align="center" width="70px">
                           จำนวนชั่วโมงที่มาทำงานไม่ครบ 12 ชม./ผลัด
                         </StyledTableCell>
                         <StyledTableCell align="center">
@@ -315,126 +383,190 @@ const CourtReportAdd = ({
                                     {i + 1}
                                   </TableCell>
                                   <TableCell component="th" scope="row">
-                                    {row.full_name}
+                                    {row.sec_person_name}
                                   </TableCell>
                                   <TableCell>
                                     <ReactSelect
-                                      name={`type${i}`}
+                                      name={`court_report_sec_persons[${i}].type`}
                                       options={optionsType}
+                                      onChange={value => {
+                                        setFieldValue(
+                                          `court_report_sec_persons[${i}].type`,
+                                          value.value
+                                        );
+                                      }}
                                       defaultValue={optionsType[0]}
                                     />
                                   </TableCell>
-                                  <TableCell align="center">
+
+                                  <TableCell
+                                    align="center"
+                                    className={classes.tableCell}
+                                  >
                                     {" "}
                                     <Field
                                       type="number"
-                                      id={`court_report_sec_persons[${i}].day_month`}
-                                      name={`court_report_sec_persons[${i}].day_month`}
-                                      value={
-                                        values.court_report_sec_persons[i]
-                                          ? values.court_report_sec_persons[i]
-                                              .day_month
-                                          : 0
-                                      }
+                                      id={`court_report_sec_persons[${i}].day_month_work`}
+                                      name={`court_report_sec_persons[${i}].day_month_work`}
                                       onChange={handleChange}
-                                      onBlur={handleBlur}
                                       component={BootstrapInput}
                                       margin="dense"
+                                      defaultValue={0}
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,
                                         max: 31,
                                         step: 1
                                       }}
-                                      onInput={e => {
-                                        e.target.value = Math.max(
-                                          0,
-                                          parseInt(e.target.value)
-                                        )
-                                          .toString()
-                                          .slice(0, 2);
+                                      hiddenlabel="true"
+                                    />
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.tableCell}
+                                  >
+                                    <Field
+                                      type="number"
+                                      id={`court_report_sec_persons[${i}].shuffle`}
+                                      name={`court_report_sec_persons[${i}].shuffle`}
+                                      onChange={handleChange}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      defaultValue={0}
+                                      inputProps={{
+                                        maxLength: 2,
+                                        min: 0,
+                                        max: 31,
+                                        step: 1
                                       }}
                                       hiddenlabel="true"
                                     />
                                   </TableCell>
-                                  <TableCell align="center">
+                                  <TableCell
+                                    align="center"
+                                    className={classes.tableCell}
+                                  >
+                                    <Field
+                                      type="number"
+                                      id={`court_report_sec_persons[${i}].shuffle_except`}
+                                      name={`court_report_sec_persons[${i}].shuffle_except`}
+                                      onChange={handleChange}
+                                      component={BootstrapInput}
+                                      margin="dense"
+                                      defaultValue={0}
+                                      inputProps={{
+                                        maxLength: 2,
+                                        min: 0,
+                                        max: 31,
+                                        step: 1
+                                      }}
+                                      hiddenlabel="true"
+                                    />
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.tableCell}
+                                  >
+                                    <Field
+                                      id={`court_report_sec_persons[${i}].shuffle_date_name`}
+                                      name={`court_report_sec_persons[${i}].shuffle_date_name`}
+                                      component={BootstrapInput}
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
+                                      margin="dense"
+                                      hiddenlabel="true"
+                                      rowsMax="4"
+                                      multiline
+                                    />
+                                  </TableCell>
+                                  <TableCell
+                                    align="center"
+                                    className={classes.tableCell}
+                                  >
                                     {" "}
                                     <Field
-                                      name={`day_month_work${i}`}
+                                      type="number"
+                                      id={`court_report_sec_persons[${i}].shuffle_Absence`}
+                                      name={`court_report_sec_persons[${i}].shuffle_Absence`}
+                                      onChange={handleChange}
                                       component={BootstrapInput}
                                       margin="dense"
+                                      defaultValue={0}
                                       inputProps={{
-                                        maxLength: 2
+                                        maxLength: 2,
+                                        min: 0,
+                                        max: 31,
+                                        step: 1
                                       }}
                                       hiddenlabel="true"
                                     />
                                   </TableCell>
-                                  <TableCell align="center">
+                                  <TableCell
+                                    align="center"
+                                    className={classes.tableCell}
+                                  >
                                     <Field
-                                      name={`shuffle${i}`}
+                                      id={`court_report_sec_persons[${i}].shuffle_Absence_date`}
+                                      name={`court_report_sec_persons[${i}].shuffle_Absence_date`}
                                       component={BootstrapInput}
-                                      margin="dense"
-                                      inputProps={{
-                                        maxLength: 2
-                                      }}
-                                      hiddenlabel="true"
-                                    />
-                                  </TableCell>
-                                  <TableCell align="center">
-                                    <Field
-                                      name={`shuffle_date_name${i}`}
-                                      component={BootstrapInput}
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
                                       margin="dense"
                                       hiddenlabel="true"
+                                      rowsMax="4"
                                       multiline
                                     />
                                   </TableCell>
-                                  <TableCell align="center">
+                                  <TableCell
+                                    align="center"
+                                    className={classes.tableCell}
+                                  >
                                     <Field
-                                      name={`shuffle_Absence${i}`}
+                                      type="number"
+                                      id={`court_report_sec_persons[${i}].h_not_12`}
+                                      name={`court_report_sec_persons[${i}].h_not_12`}
+                                      onChange={handleChange}
                                       component={BootstrapInput}
                                       margin="dense"
+                                      defaultValue={0}
                                       inputProps={{
-                                        maxLength: 2
+                                        maxLength: 2,
+                                        min: 0,
+                                        max: 1000,
+                                        step: 1
                                       }}
                                       hiddenlabel="true"
                                     />
                                   </TableCell>
-                                  <TableCell align="center">
+                                  <TableCell
+                                    align="center"
+                                    className={classes.tableCell}
+                                  >
                                     <Field
-                                      name={`shuffle_Absence_date${i}`}
+                                      id={`court_report_sec_persons[${i}].h_not_12_date_h`}
+                                      name={`court_report_sec_persons[${i}].h_not_12_date_h`}
                                       component={BootstrapInput}
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
                                       margin="dense"
                                       hiddenlabel="true"
+                                      rowsMax="4"
                                       multiline
                                     />
                                   </TableCell>
-                                  <TableCell align="center">
+                                  <TableCell
+                                    align="center"
+                                    className={classes.tableCell}
+                                  >
                                     <Field
-                                      name={`h_not_12${i}`}
+                                      id={`court_report_sec_persons[${i}].remark`}
+                                      name={`court_report_sec_persons[${i}].remark`}
                                       component={BootstrapInput}
-                                      margin="dense"
-                                      inputProps={{
-                                        maxLength: 2
-                                      }}
-                                      hiddenlabel="true"
-                                    />
-                                  </TableCell>
-                                  <TableCell align="center">
-                                    <Field
-                                      name={`h_not_12_date_h${i}`}
-                                      component={BootstrapInput}
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
                                       margin="dense"
                                       hiddenlabel="true"
-                                      multiline
-                                    />
-                                  </TableCell>
-                                  <TableCell align="center">
-                                    <Field
-                                      name={`remark${i}`}
-                                      component={BootstrapInput}
-                                      margin="dense"
-                                      hiddenlabel="true"
+                                      rowsMax="4"
                                       multiline
                                     />
                                   </TableCell>
