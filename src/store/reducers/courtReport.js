@@ -11,11 +11,11 @@ const initialState = {
   courtReports: [],
   courtReportData: "",
   loading: true,
-  error: {}
+  error: null
 };
 
 export default (state = initialState, action) => {
-  const { type, payload } = action;
+  const { type, payload, error } = action;
   switch (type) {
     case GET_COURT_REPORT:
     case UPDATE_COURT_REPORT:
@@ -48,7 +48,7 @@ export default (state = initialState, action) => {
     case COURT_REPORT_ERROR:
       return {
         ...state,
-        error: payload
+        error: error
       };
     default:
       return state;

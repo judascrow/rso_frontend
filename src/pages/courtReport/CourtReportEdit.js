@@ -7,7 +7,7 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-// import TextField from "@material-ui/core/TextField";
+import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -29,9 +29,10 @@ import BootstrapInput from "../../components/BootstrapInput";
 import { Formik, Field, Form, FieldArray } from "formik";
 // import * as Yup from "yup";
 
-import { createCourtReport } from "../../store/actions/courtReport";
-import { getSecPersons } from "../../store/actions/secPerson";
-import { TextField } from "@material-ui/core";
+import {
+  getCourtReport,
+  updateCourtReport
+} from "../../store/actions/courtReport";
 
 const optionsType = [
   { value: 1, label: "ทำงาน 7 วัน/สัปดาห์" },
@@ -63,16 +64,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-// const SignupSchema = Yup.object().shape({
-//   work_7day: Yup.number()
-//     .min(0, "จำนวนวันต้องไม่น้อยกว่า 0 วัน")
-//     .max(31, "จำนวนวันต้องไม่เกิน 31 วัน"),
-//   work_6day: Yup.number()
-//     .min(0, "จำนวนวันต้องไม่น้อยกว่า 0 วัน")
-//     .max(31, "จำนวนวันต้องไม่เกิน 31 วัน")
-// });
-
-/* table sec_person */
 const StyledTableCell = withStyles(theme => ({
   head: {
     backgroundColor: "#29b6f6",
@@ -97,18 +88,19 @@ const GetTotalDayFromMonth = month => {
   return day;
 };
 
-const CourtReportAdd = ({
-  createCourtReport,
+const CourtReportEdit = ({
+  getCourtReport,
   history,
-  secPerson: { secPersons, loading },
-  getSecPersons
+  match,
+  courtReport: { courtReportData, loading },
+  updateSecPerson
 }) => {
   const classes = useStyles();
 
   useEffect(() => {
-    getSecPersons("A");
+    getCourtReport(match.params.id);
     // eslint-disable-next-line
-  }, []);
+  }, [getCourtReport, match.params.id]);
 
   return (
     <Fragment>
@@ -125,29 +117,43 @@ const CourtReportAdd = ({
         <Formik
           enableReinitialize
           initialValues={{
-            year: YearOptionsList[0].value,
-            month: MonthOptionsList[new Date().getUTCMonth() - 1].value,
-            work_7day: GetTotalDayFromMonth(new Date().getUTCMonth() - 1),
-            work_6day: 25,
+            year:
+              loading || !courtReportData.year
+                ? YearOptionsList[0].value
+                : courtReportData.year,
+            month:
+              loading || !courtReportData.month
+                ? MonthOptionsList[new Date().getUTCMonth() - 1].value
+                : courtReportData.month,
+            work_7day:
+              loading || !courtReportData.work_7day
+                ? GetTotalDayFromMonth(new Date().getUTCMonth() - 1)
+                : courtReportData.work_7day,
+            work_6day:
+              loading || !courtReportData.work_6day
+                ? 25
+                : courtReportData.work_6day,
             reporter_name: "",
             reporter_position: "",
             inspector_name: "",
             inspector_position: "",
             court_report_sec_persons:
               !loading &&
-              secPersons !== null &&
-              secPersons.data.map((secPerson, i) => ({
-                sec_person_name: secPerson.full_name,
-                type: 1,
-                day_month_work: 0,
-                shuffle: 0,
-                shuffle_date_name: "",
-                shuffle_Absence: 0,
-                shuffle_Absence_date: "",
-                h_not_12: 0,
-                h_not_12_date_h: "",
-                remark: ""
-              }))
+              courtReportData !== null &&
+              courtReportData.court_report_sec_persons.map(
+                (court_report_sec_persons, i) => ({
+                  sec_person_name: court_report_sec_persons.full_name,
+                  type: 1,
+                  day_month_work: 0,
+                  shuffle: 0,
+                  shuffle_date_name: "",
+                  shuffle_Absence: 0,
+                  shuffle_Absence_date: "",
+                  h_not_12: 0,
+                  h_not_12_date_h: "",
+                  remark: ""
+                })
+              )
           }}
           // validationSchema={SignupSchema}
           onSubmit={(values, { setSubmitting }) => {
@@ -156,7 +162,7 @@ const CourtReportAdd = ({
             if (r) {
               console.log(values);
 
-              createCourtReport(values, history);
+              //createCourtReport(values, history);
             }
           }}
         >
@@ -564,17 +570,17 @@ const CourtReportAdd = ({
   );
 };
 
-CourtReportAdd.propTypes = {
-  createCourtReport: PropTypes.func.isRequired,
-  getSecPersons: PropTypes.func.isRequired,
-  secPerson: PropTypes.object.isRequired
+CourtReportEdit.propTypes = {
+  updateCourtReport: PropTypes.func.isRequired,
+  getCourtReport: PropTypes.func.isRequired,
+  courtReport: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  secPerson: state.secPerson
+  courtReport: state.courtReport
 });
 
 export default connect(
   mapStateToProps,
-  { createCourtReport, getSecPersons }
-)(withRouter(CourtReportAdd));
+  { updateCourtReport, getCourtReport }
+)(withRouter(CourtReportEdit));

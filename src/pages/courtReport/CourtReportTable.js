@@ -5,14 +5,17 @@ import PropTypes from "prop-types";
 
 import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import ReceiptIcon from "@material-ui/icons/ReceiptOutlined";
+import AssignmentIndIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import Tooltip from "@material-ui/core/Tooltip";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Chip from "@material-ui/core/Chip";
 
-import { getCourtReports } from "../../store/actions/courtReport";
+import {
+  getCourtReports,
+  deleteCourtReport
+} from "../../store/actions/courtReport";
 import ConvertMonth from "../../components/ConvertMonth";
 
 const useStyles = makeStyles(theme => ({
@@ -29,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 const CourtReportTable = ({
   getCourtReports,
-  //deleteUser,
+  deleteCourtReport,
   courtReport: { courtReports, loading },
   history
 }) => {
@@ -40,15 +43,15 @@ const CourtReportTable = ({
   }, [getCourtReports]);
 
   const onDelete = async rowData => {
-    // var r = confirm("You want to delete " + rowData.username); //eslint-disable-line
-    // if (r) {
-    //   await deleteUser(rowData.id);
-    //   await getUsers();
-    // }
+    var r = confirm("คุณต้องการลบข้อมูลใช่หรือไม่ ?"); //eslint-disable-line
+    if (r) {
+      await deleteCourtReport(rowData.id);
+      await getCourtReports();
+    }
   };
 
   const onEdit = rowData => {
-    history.push(`/courtreports/edit/` + rowData.id);
+    history.push(`/courtreport/edit/` + rowData.id);
     // alert(rowData.id);
   };
 
@@ -57,7 +60,7 @@ const CourtReportTable = ({
       {
         title: "เดือน - ปี",
         field: "year",
-        lookup: { 2019: "2019", 2020: "2020" },
+        lookup: { 2562: "2562", 2563: "2563" },
         render: rowData => ConvertMonth(rowData.month) + " " + rowData.year
       },
       {
@@ -106,7 +109,7 @@ const CourtReportTable = ({
 
   const TableTitle = (
     <div>
-      <ReceiptIcon className={classes.titleIcon} fontSize="large" />
+      <AssignmentIndIcon className={classes.titleIcon} fontSize="large" />
       {"รายงานการตรวจรับพัสดุจ้างเหมารักษาความปลอดภัยประจำเดือน"}
     </div>
   );
@@ -141,8 +144,8 @@ const CourtReportTable = ({
 
 CourtReportTable.propTypes = {
   getCourtReports: PropTypes.func.isRequired,
-  courtReport: PropTypes.object.isRequired
-  // deleteUser: PropTypes.func.isRequired
+  courtReport: PropTypes.object.isRequired,
+  deleteCourtReport: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -151,5 +154,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getCourtReports }
+  { getCourtReports, deleteCourtReport }
 )(withRouter(CourtReportTable));

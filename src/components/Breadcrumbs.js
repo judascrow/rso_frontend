@@ -20,7 +20,8 @@ const breadcrumbNameMap = {
   "/secperson/add": "เพิ่มข้อมูล",
   "/secperson/edit": "แก้ไขข้อมูล",
   "/courtreport": "รายงานการตรวจรับฯ",
-  "/courtreport/add": "เพิ่มข้อมูล"
+  "/courtreport/add": "เพิ่มข้อมูล",
+  "/courtreport/edit": "แก้ไขข้อมูล"
 };
 
 const styles = theme => ({

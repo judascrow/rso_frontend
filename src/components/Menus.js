@@ -2,7 +2,7 @@ import React from "react";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentIndOutlined";
 import HomeIcon from "@material-ui/icons/HomeOutlined";
 import PeopleIcon from "@material-ui/icons/PeopleOutlined";
-import ReceiptIcon from "@material-ui/icons/ReceiptOutlined";
+import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedInOutlined";
 
 const Menus = [
   {
@@ -22,7 +22,7 @@ const Menus = [
   {
     id: 3,
     text: "รายงานการตรวจรับ",
-    icon: <ReceiptIcon />,
+    icon: <AssignmentTurnedIn />,
     path: "/courtreport",
     roleID: [2]
   },
