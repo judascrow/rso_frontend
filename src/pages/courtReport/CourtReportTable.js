@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { patch } from "axios";
 
 import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,6 +12,17 @@ import AddIcon from "@material-ui/icons/Add";
 import Tooltip from "@material-ui/core/Tooltip";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Chip from "@material-ui/core/Chip";
+
+// Modal
+import { apiUrl } from "../../config";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+
+import Moment from "moment";
 
 import {
   getCourtReports,
@@ -55,6 +67,51 @@ const CourtReportTable = ({
     // alert(rowData.id);
   };
 
+  // Modal
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState(null);
+  const [file, setFile] = useState(null);
+
+  function handleCloseModal() {
+    setOpen(false);
+  }
+
+  const onChangeModal = e => {
+    if (e.target.files[0].type === "application/pdf") {
+      setFile(e.target.files[0]);
+    } else {
+      alert("อัพโหลดได้เฉพาะไฟล์ PDF เท่านั้น");
+      setFile(null);
+      e.target.value = "";
+    }
+  };
+
+  const onSubmitModal = async e => {
+    e.preventDefault(); // Stop form submit
+    if (file === null) {
+      alert("กรุณาเลือกไฟล์");
+    } else {
+      await fileUpload(file, data.id).then(response => {
+        setOpen(false);
+      });
+      await getCourtReports();
+      await setFile(null);
+    }
+  };
+
+  const fileUpload = (file, id) => {
+    const url = `${apiUrl}/court_reports/${id}`;
+    const formData = new FormData();
+    formData.append("file", file);
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data"
+      }
+    };
+
+    return patch(url, formData, config);
+  };
+
   const [state] = useState({
     columns: [
       {
@@ -68,11 +125,35 @@ const CourtReportTable = ({
         field: "status",
         lookup: { S: "ส่งเรียบร้อยแล้ว", W: "รอส่ง" },
         render: rowData =>
-          rowData.status !== "W" ? (
-            <Chip label="ส่งเรียบร้อยแล้ว" color="secondary" size="small" />
+          rowData.status === "S" ? (
+            <Chip
+              label="ส่งข้อมูลเรียบร้อยแล้ว"
+              color="secondary"
+              size="small"
+            />
           ) : (
             <Chip label="รอส่ง" size="small" />
           )
+      },
+      {
+        title: "วันที่สร้าง",
+        field: "created_at",
+        filtering: false,
+        headerStyle: {
+          width: "300px"
+        },
+        render: rowData =>
+          Moment(rowData.created_at).format("YYYY-MM-DD HH:mm:ss")
+      },
+      {
+        title: "วันที่แก้ไขล่าสุด",
+        field: "updated_at",
+        filtering: false,
+        headerStyle: {
+          width: "300px"
+        },
+        render: rowData =>
+          Moment(rowData.updated_at).format("YYYY-MM-DD HH:mm:ss")
       }
     ],
     actions: [
@@ -92,7 +173,10 @@ const CourtReportTable = ({
         icon: "send",
         iconProps: { color: "secondary" },
         tooltip: "ส่งรายงาน",
-        onClick: (event, rowData) => alert(rowData.id)
+        onClick: async (event, rowData) => {
+          await setOpen(true);
+          await setData(rowData);
+        }
       }),
       rowData => ({
         icon: "delete",
@@ -144,6 +228,31 @@ const CourtReportTable = ({
           <AddIcon />
         </Fab>
       </Tooltip>
+
+      <Dialog
+        open={open}
+        onClose={handleCloseModal}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
+          ส่งข้อมูลประจำเดือน {data && ConvertMonth(data.month)}{" "}
+          {data && data.year}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            กรุณาอัพโหลดไฟล์เอกสารที่เกี่ยวข้อง
+          </DialogContentText>
+          <input type="file" name="file" onChange={onChangeModal} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary">
+            ยกเลิก
+          </Button>
+          <Button onClick={onSubmitModal} color="primary">
+            ส่งข้อมูล
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Fragment>
   );
 };
