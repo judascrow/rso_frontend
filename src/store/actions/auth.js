@@ -8,6 +8,7 @@ import {
   LOGOUT,
   CLEAR_PROFILE
 } from "./types";
+import { apiUrl } from "../../config";
 import setAuthToken from "../../utils/setAuthToken";
 
 // Load User
@@ -17,7 +18,7 @@ export const loadUser = () => async dispatch => {
   }
 
   try {
-    const res = await axios.get("http://localhost:8080/api/v1/me/");
+    const res = await axios.get(`${apiUrl}/me/`);
 
     dispatch({
       type: USER_LOADED,
@@ -41,11 +42,7 @@ export const login = (username, password) => async dispatch => {
   const body = JSON.stringify({ username, password });
 
   try {
-    const res = await axios.post(
-      "http://localhost:8080/api/v1/login",
-      body,
-      config
-    );
+    const res = await axios.post(`${apiUrl}/login`, body, config);
 
     dispatch({
       type: LOGIN_SUCCESS,

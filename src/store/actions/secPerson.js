@@ -3,10 +3,11 @@ import {
   GET_SEC_PERSONS,
   GET_SEC_PERSON,
   SEC_PERSON_ERROR,
-  // DELETE_SEC_PERSON,
+  DELETE_SEC_PERSON,
   UPDATE_SEC_PERSON
 } from "./types";
 import setAuthToken from "../../utils/setAuthToken";
+import { apiUrl } from "../../config";
 
 // Get SecPersons
 export const getSecPersons = (status = "") => async dispatch => {
@@ -21,9 +22,9 @@ export const getSecPersons = (status = "") => async dispatch => {
       }
     };
 
-    let url = "http://localhost:8080/api/v1/sec_persons/";
+    let url = `${apiUrl}/sec_persons/`;
     if (status !== "") {
-      url = `http://localhost:8080/api/v1/sec_persons/?status=${status}`;
+      url = `${apiUrl}/sec_persons/?status=${status}`;
     }
 
     const res = await axios.get(url, config);
@@ -56,10 +57,7 @@ export const getSecPerson = id => async dispatch => {
       }
     };
 
-    const res = await axios.get(
-      `http://localhost:8080/api/v1/sec_persons/${id}`,
-      config
-    );
+    const res = await axios.get(`${apiUrl}/sec_persons/${id}`, config);
 
     dispatch({
       type: GET_SEC_PERSON,
@@ -76,21 +74,21 @@ export const getSecPerson = id => async dispatch => {
   }
 };
 
-// // Delete user
-// export const deleteUser = id => async dispatch => {
-//   try {
-//     await axios.delete(`http://localhost:8080/api/v1/users/${id}`);
+// Delete deleteSecPerson
+export const deleteSecPerson = id => async dispatch => {
+  try {
+    await axios.delete(`${apiUrl}/sec_persons/${id}`);
 
-//     dispatch({
-//       type: DELETE_USER,
-//       payload: id
-//     });
-//   } catch (err) {
-//     dispatch({
-//       type: USER_ERROR
-//     });
-//   }
-// };
+    dispatch({
+      type: DELETE_SEC_PERSON,
+      payload: id
+    });
+  } catch (err) {
+    dispatch({
+      type: SEC_PERSON_ERROR
+    });
+  }
+};
 
 // createSecPerson
 export const createSecPerson = (formData, history) => async dispatch => {
@@ -101,11 +99,7 @@ export const createSecPerson = (formData, history) => async dispatch => {
       }
     };
 
-    const res = await axios.post(
-      `http://localhost:8080/api/v1/sec_persons/`,
-      formData,
-      config
-    );
+    const res = await axios.post(`${apiUrl}/sec_persons/`, formData, config);
 
     dispatch({
       type: GET_SEC_PERSONS,
@@ -142,7 +136,7 @@ export const updateSecPerson = (id, formData, history) => async dispatch => {
 
   try {
     const res = await axios.put(
-      `http://localhost:8080/api/v1/sec_persons/${id}`,
+      `${apiUrl}/sec_persons/${id}`,
       formData,
       config
     );

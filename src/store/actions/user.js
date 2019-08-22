@@ -7,6 +7,7 @@ import {
   UPDATE_USER
 } from "./types";
 import setAuthToken from "../../utils/setAuthToken";
+import { apiUrl } from "../../config";
 
 // Get users
 export const getUsers = () => async dispatch => {
@@ -21,7 +22,7 @@ export const getUsers = () => async dispatch => {
       }
     };
 
-    const res = await axios.get("http://localhost:8080/api/v1/users/", config);
+    const res = await axios.get(`${apiUrl}/users/`, config);
 
     dispatch({
       type: GET_USERS,
@@ -51,10 +52,7 @@ export const getUser = id => async dispatch => {
       }
     };
 
-    const res = await axios.get(
-      `http://localhost:8080/api/v1/users/${id}`,
-      config
-    );
+    const res = await axios.get(`${apiUrl}/users/${id}`, config);
 
     dispatch({
       type: GET_USER,
@@ -74,7 +72,7 @@ export const getUser = id => async dispatch => {
 // Delete user
 export const deleteUser = id => async dispatch => {
   try {
-    await axios.delete(`http://localhost:8080/api/v1/users/${id}`);
+    await axios.delete(`${apiUrl}/users/${id}`);
 
     dispatch({
       type: DELETE_USER,
@@ -100,11 +98,7 @@ export const createUser = (
       }
     };
 
-    const res = await axios.post(
-      `http://localhost:8080/api/v1/users/`,
-      formData,
-      config
-    );
+    const res = await axios.post(`${apiUrl}/users/`, formData, config);
 
     dispatch({
       type: GET_USERS,
@@ -142,11 +136,7 @@ export const updateUser = (id, formData, history) => async dispatch => {
   };
 
   try {
-    const res = await axios.put(
-      `http://localhost:8080/api/v1/users/${id}`,
-      formData,
-      config
-    );
+    const res = await axios.put(`${apiUrl}/users/${id}`, formData, config);
 
     dispatch({
       type: UPDATE_USER,

@@ -93,7 +93,7 @@ const CourtReportEdit = ({
   history,
   match,
   courtReport: { courtReportData, loading },
-  updateSecPerson
+  updateCourtReport
 }) => {
   const classes = useStyles();
 
@@ -133,27 +133,39 @@ const CourtReportEdit = ({
               loading || !courtReportData.work_6day
                 ? 25
                 : courtReportData.work_6day,
-            reporter_name: "",
-            reporter_position: "",
-            inspector_name: "",
-            inspector_position: "",
+            reporter_name:
+              loading || !courtReportData.reporter_name
+                ? ""
+                : courtReportData.reporter_name,
+            reporter_position:
+              loading || !courtReportData.reporter_position
+                ? ""
+                : courtReportData.reporter_position,
+            inspector_name:
+              loading || !courtReportData.inspector_name
+                ? ""
+                : courtReportData.inspector_name,
+            inspector_position:
+              loading || !courtReportData.inspector_position
+                ? ""
+                : courtReportData.inspector_position,
             court_report_sec_persons:
-              !loading &&
-              courtReportData !== null &&
-              courtReportData.court_report_sec_persons.map(
-                (court_report_sec_persons, i) => ({
-                  sec_person_name: court_report_sec_persons.full_name,
-                  type: 1,
-                  day_month_work: 0,
-                  shuffle: 0,
-                  shuffle_date_name: "",
-                  shuffle_Absence: 0,
-                  shuffle_Absence_date: "",
-                  h_not_12: 0,
-                  h_not_12_date_h: "",
-                  remark: ""
-                })
-              )
+              loading || !courtReportData
+                ? []
+                : courtReportData.court_report_sec_persons.map((cs, i) => ({
+                    id: cs.id,
+                    court_report_id: cs.court_report_id,
+                    sec_person_name: cs.sec_person_name,
+                    type: cs.type,
+                    day_month_work: cs.day_month_work,
+                    shuffle: cs.shuffle,
+                    shuffle_date_name: cs.shuffle_date_name,
+                    shuffle_Absence: cs.shuffle_Absence,
+                    shuffle_Absence_date: cs.shuffle_Absence_date,
+                    h_not_12: cs.h_not_12,
+                    h_not_12_date_h: cs.h_not_12_date_h,
+                    remark: cs.remark
+                  }))
           }}
           // validationSchema={SignupSchema}
           onSubmit={(values, { setSubmitting }) => {
@@ -162,7 +174,7 @@ const CourtReportEdit = ({
             if (r) {
               console.log(values);
 
-              //createCourtReport(values, history);
+              updateCourtReport(match.params.id, values, history);
             }
           }}
         >
@@ -186,6 +198,7 @@ const CourtReportEdit = ({
                     defaultValue={YearOptionsList[0]}
                     isClearable={false}
                     component={Select}
+                    value={YearOptionsList.find(s => s.value === values.year)}
                   />
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -207,6 +220,7 @@ const CourtReportEdit = ({
                     }
                     isClearable={false}
                     component={Select}
+                    value={MonthOptionsList.find(s => s.value === values.month)}
                   />
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -219,9 +233,11 @@ const CourtReportEdit = ({
                     defaultValue={DateNoOptionsList.find(
                       s => s.value === GetTotalDayFromMonth(values.month)
                     )}
-                    value={DateNoOptionsList[values.work_7day]}
                     isClearable={false}
                     component={Select}
+                    value={DateNoOptionsList.find(
+                      s => s.value === values.work_7day
+                    )}
                   />
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -232,9 +248,11 @@ const CourtReportEdit = ({
                     onChange={value => setFieldValue("work_6day", value.value)}
                     labelName={"จำนวนวันทำงาน ประเภท 12 ชั่วโมง / 6 วัน"}
                     defaultValue={DateNoOptionsList[25]}
-                    value={DateNoOptionsList[values.work_6day]}
                     isClearable={false}
                     component={Select}
+                    value={DateNoOptionsList.find(
+                      s => s.value === values.work_6day
+                    )}
                   />
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -247,6 +265,7 @@ const CourtReportEdit = ({
                     onBlur={handleBlur}
                     autoComplete="off"
                     fullWidth
+                    value={values.reporter_name}
                   />
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -259,6 +278,7 @@ const CourtReportEdit = ({
                     onBlur={handleBlur}
                     autoComplete="off"
                     fullWidth
+                    value={values.reporter_position}
                   />
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -271,6 +291,7 @@ const CourtReportEdit = ({
                     onBlur={handleBlur}
                     autoComplete="off"
                     fullWidth
+                    value={values.inspector_name}
                   />
                 </Grid>
                 <Grid item xs={12} sm={3}>
@@ -283,6 +304,7 @@ const CourtReportEdit = ({
                     onBlur={handleBlur}
                     autoComplete="off"
                     fullWidth
+                    value={values.inspector_position}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -358,6 +380,9 @@ const CourtReportEdit = ({
                                         );
                                       }}
                                       defaultValue={optionsType[0]}
+                                      value={optionsType.find(
+                                        s => s.value === row.type
+                                      )}
                                     />
                                   </TableCell>
 
@@ -373,7 +398,6 @@ const CourtReportEdit = ({
                                       onChange={handleChange}
                                       component={BootstrapInput}
                                       margin="dense"
-                                      defaultValue={0}
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,
@@ -381,6 +405,7 @@ const CourtReportEdit = ({
                                         step: 1
                                       }}
                                       hiddenlabel="true"
+                                      value={row.day_month_work}
                                     />
                                   </TableCell>
                                   <TableCell
@@ -394,7 +419,6 @@ const CourtReportEdit = ({
                                       onChange={handleChange}
                                       component={BootstrapInput}
                                       margin="dense"
-                                      defaultValue={0}
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,
@@ -402,6 +426,7 @@ const CourtReportEdit = ({
                                         step: 1
                                       }}
                                       hiddenlabel="true"
+                                      value={row.shuffle}
                                     />
                                   </TableCell>
                                   <TableCell
@@ -415,7 +440,6 @@ const CourtReportEdit = ({
                                       onChange={handleChange}
                                       component={BootstrapInput}
                                       margin="dense"
-                                      defaultValue={0}
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,
@@ -423,6 +447,7 @@ const CourtReportEdit = ({
                                         step: 1
                                       }}
                                       hiddenlabel="true"
+                                      value={row.shuffle_except}
                                     />
                                   </TableCell>
                                   <TableCell
@@ -439,6 +464,7 @@ const CourtReportEdit = ({
                                       hiddenlabel="true"
                                       rowsMax="4"
                                       multiline
+                                      value={row.shuffle_date_name}
                                     />
                                   </TableCell>
                                   <TableCell
@@ -453,7 +479,6 @@ const CourtReportEdit = ({
                                       onChange={handleChange}
                                       component={BootstrapInput}
                                       margin="dense"
-                                      defaultValue={0}
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,
@@ -461,6 +486,7 @@ const CourtReportEdit = ({
                                         step: 1
                                       }}
                                       hiddenlabel="true"
+                                      value={row.shuffle_Absence}
                                     />
                                   </TableCell>
                                   <TableCell
@@ -477,6 +503,7 @@ const CourtReportEdit = ({
                                       hiddenlabel="true"
                                       rowsMax="4"
                                       multiline
+                                      value={row.shuffle_Absence_date}
                                     />
                                   </TableCell>
                                   <TableCell
@@ -490,7 +517,6 @@ const CourtReportEdit = ({
                                       onChange={handleChange}
                                       component={BootstrapInput}
                                       margin="dense"
-                                      defaultValue={0}
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,
@@ -498,6 +524,7 @@ const CourtReportEdit = ({
                                         step: 1
                                       }}
                                       hiddenlabel="true"
+                                      value={row.h_not_12}
                                     />
                                   </TableCell>
                                   <TableCell
@@ -514,6 +541,7 @@ const CourtReportEdit = ({
                                       hiddenlabel="true"
                                       rowsMax="4"
                                       multiline
+                                      value={row.h_not_12_date_h}
                                     />
                                   </TableCell>
                                   <TableCell
@@ -530,6 +558,7 @@ const CourtReportEdit = ({
                                       hiddenlabel="true"
                                       rowsMax="4"
                                       multiline
+                                      value={row.remark}
                                     />
                                   </TableCell>
                                 </TableRow>

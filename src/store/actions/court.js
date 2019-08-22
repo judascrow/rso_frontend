@@ -1,6 +1,7 @@
 import axios from "axios";
 import { GET_COURTS, COURTS_ERROR, SET_LOADING } from "./types";
 import setAuthToken from "../../utils/setAuthToken";
+import { apiUrl } from "../../config";
 
 // Get techs from server
 export const getCourts = () => async dispatch => {
@@ -16,7 +17,7 @@ export const getCourts = () => async dispatch => {
       }
     };
 
-    const res = await axios.get("http://localhost:8080/api/v1/courts/", config);
+    const res = await axios.get(`${apiUrl}/courts/`, config);
 
     dispatch({
       type: GET_COURTS,

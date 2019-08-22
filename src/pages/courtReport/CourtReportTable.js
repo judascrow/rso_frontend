@@ -83,10 +83,16 @@ const CourtReportTable = ({
         onClick: (event, rowData) => onEdit(rowData)
       },
       rowData => ({
+        icon: "printer",
+        iconProps: { color: "action" },
+        tooltip: "ปริ้นเอกสาร",
+        onClick: (event, rowData) => alert(JSON.stringify(rowData))
+      }),
+      rowData => ({
         icon: "send",
         iconProps: { color: "secondary" },
         tooltip: "ส่งรายงาน",
-        onClick: (event, rowData) => onDelete(rowData)
+        onClick: (event, rowData) => alert(rowData.id)
       }),
       rowData => ({
         icon: "delete",

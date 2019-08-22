@@ -12,7 +12,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Chip from "@material-ui/core/Chip";
 
-import { getSecPersons } from "../../store/actions/secPerson";
+import { getSecPersons, deleteSecPerson } from "../../store/actions/secPerson";
 
 const useStyles = makeStyles(theme => ({
   titleIcon: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 
 const SecPersonTable = ({
   getSecPersons,
-  //deleteUser,
+  deleteSecPerson,
   secPerson: { secPersons, loading },
   history
 }) => {
@@ -38,13 +38,13 @@ const SecPersonTable = ({
     getSecPersons();
   }, [getSecPersons]);
 
-  // const onDelete = async rowData => {
-  //   // var r = confirm("You want to delete " + rowData.username); //eslint-disable-line
-  //   // if (r) {
-  //   //   await deleteUser(rowData.id);
-  //   //   await getUsers();
-  //   // }
-  // };
+  const onDelete = async rowData => {
+    var r = confirm(`คุณต้องการลบข้อมูล ${rowData.full_name} ใช่หรือไม่ ?`); //eslint-disable-line
+    if (r) {
+      await deleteSecPerson(rowData.id);
+      await getSecPersons();
+    }
+  };
 
   const onEdit = rowData => {
     history.push(`/secperson/edit/` + rowData.id);
@@ -76,13 +76,13 @@ const SecPersonTable = ({
         iconProps: { color: "primary" },
         tooltip: "แก้ไขผู้ใช้งาน",
         onClick: (event, rowData) => onEdit(rowData)
-      }
-      // rowData => ({
-      //   icon: "delete",
-      //   iconProps: { color: "error" },
-      //   tooltip: "ลบผู้ใช้งาน",
-      //   onClick: (event, rowData) => onDelete(rowData)
-      // })
+      },
+      rowData => ({
+        icon: "delete",
+        iconProps: { color: "error" },
+        tooltip: "ลบผู้ใช้งาน",
+        onClick: (event, rowData) => onDelete(rowData)
+      })
     ],
     options: {
       filtering: true,
@@ -133,8 +133,8 @@ const SecPersonTable = ({
 
 SecPersonTable.propTypes = {
   getSecPersons: PropTypes.func.isRequired,
-  secPerson: PropTypes.object.isRequired
-  // deleteUser: PropTypes.func.isRequired
+  secPerson: PropTypes.object.isRequired,
+  deleteSecPerson: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -143,5 +143,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getSecPersons }
+  { getSecPersons, deleteSecPerson }
 )(withRouter(SecPersonTable));

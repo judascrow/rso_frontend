@@ -8,6 +8,7 @@ import {
   COURT_REPORT_ERROR
 } from "./types";
 import setAuthToken from "../../utils/setAuthToken";
+import { apiUrl } from "../../config";
 
 // Get SecPersons
 export const getCourtReports = () => async dispatch => {
@@ -22,10 +23,7 @@ export const getCourtReports = () => async dispatch => {
       }
     };
 
-    const res = await axios.get(
-      "http://localhost:8080/api/v1/court_reports/",
-      config
-    );
+    const res = await axios.get(`${apiUrl}/court_reports/`, config);
 
     dispatch({
       type: GET_COURT_REPORTS,
@@ -55,11 +53,7 @@ export const getCourtReport = id => async dispatch => {
       }
     };
 
-    const res = await axios.get(
-      `http://localhost:8080/api/v1/court_reports/${id}`,
-      config
-    );
-
+    const res = await axios.get(`${apiUrl}/court_reports/${id}`, config);
     dispatch({
       type: GET_COURT_REPORT,
       payload: res.data
@@ -67,6 +61,8 @@ export const getCourtReport = id => async dispatch => {
   } catch (err) {
     const errors = err.response.data;
     if (errors) {
+      console.log(errors.message);
+
       dispatch({
         type: COURT_REPORT_ERROR,
         error: errors.message
@@ -78,7 +74,7 @@ export const getCourtReport = id => async dispatch => {
 // Delete CourtReport
 export const deleteCourtReport = id => async dispatch => {
   try {
-    await axios.delete(`http://localhost:8080/api/v1/court_reports/${id}`);
+    await axios.delete(`${apiUrl}/court_reports/${id}`);
 
     dispatch({
       type: DELETE_COURT_REPORT,
@@ -100,11 +96,7 @@ export const createCourtReport = (formData, history) => async dispatch => {
       }
     };
 
-    const res = await axios.post(
-      `http://localhost:8080/api/v1/court_reports/`,
-      formData,
-      config
-    );
+    const res = await axios.post(`${apiUrl}/court_reports/`, formData, config);
 
     dispatch({
       type: GET_COURT_REPORTS,
@@ -144,7 +136,7 @@ export const updateCourtReport = (id, formData, history) => async dispatch => {
 
   try {
     const res = await axios.put(
-      `http://localhost:8080/api/v1/court_reports/${id}`,
+      `${apiUrl}/court_reports/${id}`,
       formData,
       config
     );
@@ -154,7 +146,7 @@ export const updateCourtReport = (id, formData, history) => async dispatch => {
       payload: res.data
     });
 
-    history.push("/secperson");
+    history.push("/courtreport");
   } catch (err) {
     const errors = err.response.data;
     if (errors) {
