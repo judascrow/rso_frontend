@@ -350,6 +350,12 @@ const CourtReportAdd = ({
                                           `court_report_sec_persons[${i}].type`,
                                           value.value
                                         );
+                                        setFieldValue(
+                                          `court_report_sec_persons[${i}].day_month_work`,
+                                          value.value === 1
+                                            ? values.work_7day
+                                            : values.work_6day
+                                        );
                                       }}
                                       defaultValue={optionsType[0]}
                                     />
@@ -371,10 +377,15 @@ const CourtReportAdd = ({
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,
-                                        max: 31,
+                                        max:
+                                          values.court_report_sec_persons[i]
+                                            .type === 1
+                                            ? values.work_7day
+                                            : values.work_6day,
                                         step: 1
                                       }}
                                       hiddenlabel="true"
+                                      value={row.day_month_work}
                                     />
                                   </TableCell>
                                   <TableCell

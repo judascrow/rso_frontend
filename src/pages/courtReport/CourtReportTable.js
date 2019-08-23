@@ -14,7 +14,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import Chip from "@material-ui/core/Chip";
 
 // Modal
-import { apiUrl } from "../../config";
+import { apiHost, apiUrl } from "../../config";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -167,7 +167,7 @@ const CourtReportTable = ({
         icon: "printer",
         iconProps: { color: "action" },
         tooltip: "ปริ้นเอกสาร",
-        onClick: (event, rowData) => alert(JSON.stringify(rowData))
+        onClick: (event, rowData) => console.log(JSON.stringify(rowData))
       }),
       rowData => ({
         icon: "send",
@@ -179,10 +179,19 @@ const CourtReportTable = ({
         }
       }),
       rowData => ({
+        icon: "picture_as_pdf",
+        iconProps: { color: rowData.status === "W" ? "disabled" : "error" },
+        tooltip: "Download เอกสาร",
+        onClick: (event, rowData) =>
+          window.open(`${apiHost}/files/${rowData.file_path}`, "_blank"),
+        disabled: rowData.status === "W"
+      }),
+      rowData => ({
         icon: "delete",
-        iconProps: { color: "error" },
+        iconProps: { color: rowData.status !== "W" ? "disabled" : "error" },
         tooltip: "ลบรายงาน",
-        onClick: (event, rowData) => onDelete(rowData)
+        onClick: (event, rowData) => onDelete(rowData),
+        disabled: rowData.status !== "W"
       })
     ],
     options: {

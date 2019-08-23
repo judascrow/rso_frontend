@@ -46,12 +46,11 @@ const SecPersonAdd = ({ createSecPerson, history }) => {
   const classes = useStyles();
 
   const [formData, setFormData] = useState({
-    nid: "",
     full_name: "",
     status: ""
   });
 
-  const { nid, full_name } = formData;
+  const { full_name } = formData;
 
   const onChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -85,19 +84,6 @@ const SecPersonAdd = ({ createSecPerson, history }) => {
 
         <form className={classes.form} onSubmit={onSubmit}>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="nid"
-                name="nid"
-                label="เลขบัตรประจำตัวประชาชน"
-                fullWidth
-                autoComplete="close"
-                value={nid}
-                onChange={onChange}
-                autoFocus
-              />
-            </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 required

@@ -53,7 +53,6 @@ const SecPersonTable = ({
 
   const [state] = useState({
     columns: [
-      { title: "เลขบัตรประชาชน", field: "nid" },
       {
         title: "Full Name",
         field: "full_name"
