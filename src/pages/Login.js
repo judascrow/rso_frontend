@@ -75,7 +75,7 @@ const Login = ({ login, isAuthenticated, error }) => {
           <img src={Logo} width={96} alt="" />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Security Contract Report
         </Typography>
         <Formik
           initialValues={{

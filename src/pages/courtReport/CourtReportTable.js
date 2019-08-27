@@ -12,6 +12,7 @@ import AddIcon from "@material-ui/icons/Add";
 import Tooltip from "@material-ui/core/Tooltip";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Chip from "@material-ui/core/Chip";
+import TextField from "@material-ui/core/TextField";
 
 // Modal
 import { apiHost, apiUrl } from "../../config";
@@ -71,10 +72,15 @@ const CourtReportTable = ({
   const [open, setOpen] = useState(false);
   const [data, setData] = useState(null);
   const [file, setFile] = useState(null);
+  const [docNo, setDocNo] = useState("");
 
   function handleCloseModal() {
     setOpen(false);
   }
+
+  const onChange = e => {
+    setDocNo(e.target.value);
+  };
 
   const onChangeModal = e => {
     if (e.target.files[0].type === "application/pdf") {
@@ -88,27 +94,33 @@ const CourtReportTable = ({
 
   const onSubmitModal = async e => {
     e.preventDefault(); // Stop form submit
-    if (file === null) {
-      alert("กรุณาเลือกไฟล์");
+    if (docNo !== "") {
+      if (file === null) {
+        alert("กรุณาเลือกไฟล์");
+      } else {
+        await fileUpload(file, data.id, docNo).then(response => {
+          setOpen(false);
+        });
+        await getCourtReports();
+        await setFile(null);
+        await setDocNo("");
+      }
     } else {
-      await fileUpload(file, data.id).then(response => {
-        setOpen(false);
-      });
-      await getCourtReports();
-      await setFile(null);
+      alert("กรุณากรอกเลขหนังสือ");
     }
   };
 
-  const fileUpload = (file, id) => {
+  const fileUpload = (file, id, docNo) => {
     const url = `${apiUrl}/court_reports/${id}`;
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("doc_no", docNo);
+
     const config = {
       headers: {
         "content-type": "multipart/form-data"
       }
     };
-
     return patch(url, formData, config);
   };
 
@@ -126,13 +138,12 @@ const CourtReportTable = ({
         lookup: { S: "ส่งเรียบร้อยแล้ว", W: "รอส่ง" },
         render: rowData =>
           rowData.status === "S" ? (
+            <Chip label="ส่งข้อมูลเรียบร้อยแล้ว" color="primary" size="small" />
+          ) : (
             <Chip
-              label="ส่งข้อมูลเรียบร้อยแล้ว"
-              color="secondary"
+              label="รอส่ง (กรุณากดปุ่มส่งเพื่ออัพโหลดเอกสาร)"
               size="small"
             />
-          ) : (
-            <Chip label="รอส่ง" size="small" />
           )
       },
       {
@@ -248,6 +259,16 @@ const CourtReportTable = ({
           {data && data.year}
         </DialogTitle>
         <DialogContent>
+          <TextField
+            id="doc_no"
+            name="doc_no"
+            label="เลขหนังสือ"
+            className={classes.textField}
+            margin="normal"
+            onChange={onChange}
+            required
+            autoFocus
+          />
           <DialogContentText>
             กรุณาอัพโหลดไฟล์เอกสารที่เกี่ยวข้อง
           </DialogContentText>

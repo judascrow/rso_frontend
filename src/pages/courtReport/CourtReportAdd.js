@@ -372,6 +372,7 @@ const CourtReportAdd = ({
 
                                   <TableCell>
                                     <ReactSelect
+                                      id={`court_report_sec_persons[${i}].role`}
                                       name={`court_report_sec_persons[${i}].role`}
                                       options={optionsRole}
                                       onChange={value => {
@@ -396,7 +397,7 @@ const CourtReportAdd = ({
                                       onChange={handleChange}
                                       component={BootstrapInput}
                                       margin="dense"
-                                      defaultValue={0}
+                                      // defaultValue={0}
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,

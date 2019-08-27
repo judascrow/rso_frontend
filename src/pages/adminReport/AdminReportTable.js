@@ -1,13 +1,14 @@
 import React, { Fragment, useState } from "react";
 
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedInOutlined";
+import ViewListOutlined from "@material-ui/icons/ViewListOutlined";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
+import Paper from "@material-ui/core/Paper";
 import Select from "@material-ui/core/Select";
 
 import { apiUrl } from "../../config";
@@ -28,6 +29,10 @@ const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120
+  },
+  paperRoot: {
+    padding: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   }
 }));
 
@@ -98,6 +103,10 @@ const AdminReportTable = () => {
         title: "ไม่ครบ 12 ชม. (ชั่วโมง)",
         field: "h_not_12",
         type: "numeric"
+      },
+      {
+        title: "เลขที่หนังสือ",
+        field: "doc_no"
       }
     ],
     options: {
@@ -116,13 +125,91 @@ const AdminReportTable = () => {
 
   const TableTitle = (
     <div>
-      <AssignmentTurnedIn className={classes.titleIcon} fontSize="large" />
-      {"รายงานการตรวจรับพัศดุการจ้างเหมารักษาความปลอดภัยอาคารศาลและสถานที่"}
+      <ViewListOutlined className={classes.titleIcon} fontSize="large" />
+      {"รายงานการตรวจรับพัศดุการจ้างเหมารักษาความปลอดภัยฯ"}
     </div>
   );
 
   return (
     <Fragment>
+      <Paper className={classes.paperRoot}>
+        <form
+          onSubmit={event => {
+            if (values.year !== "0000" && values.month !== "00") {
+              doFetch(
+                `${apiUrl}/admin_reports/?year=${values.year}&month=${
+                  values.month
+                }`
+              );
+            } else if (values.year !== "0000" && values.month === "00") {
+              doFetch(`${apiUrl}/admin_reports/?year=${values.year}`);
+            } else if (values.year === "0000" && values.month !== "00") {
+              doFetch(`${apiUrl}/admin_reports/?month=${values.month}`);
+            } else {
+              doFetch(`${apiUrl}/admin_reports/`);
+            }
+
+            event.preventDefault();
+          }}
+        >
+          <Grid container>
+            <Grid item xs={12} sm={12}>
+              <FormControl className={classes.formControl}>
+                {/* <InputLabel htmlFor="year">ปี</InputLabel> */}
+                <Select
+                  value={values.year}
+                  onChange={handleChange}
+                  inputProps={{
+                    name: "year",
+                    id: "year"
+                  }}
+                >
+                  <MenuItem value={"0000"}>ทั้งหมด</MenuItem>
+                  <MenuItem value={"2562"}>2562</MenuItem>
+                  <MenuItem value={"2563"}>2563</MenuItem>
+                  <MenuItem value={"2564"}>2564</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                {/* <InputLabel htmlFor="month">เดือน</InputLabel> */}
+                <Select
+                  value={values.month}
+                  onChange={handleChange}
+                  inputProps={{
+                    name: "month",
+                    id: "month"
+                  }}
+                >
+                  <MenuItem value={"00"}>ทั้งหมด</MenuItem>
+                  <MenuItem value={"01"}>มกราคม</MenuItem>
+                  <MenuItem value={"02"}>กุมภาพันธ์</MenuItem>
+                  <MenuItem value={"03"}>มีนาคม</MenuItem>
+                  <MenuItem value={"04"}>เมษายน</MenuItem>
+                  <MenuItem value={"05"}>พฤษภาคม</MenuItem>
+                  <MenuItem value={"06"}>มิถุนายน</MenuItem>
+                  <MenuItem value={"07"}>กรกฎาคม</MenuItem>
+                  <MenuItem value={"08"}>สิงหาคม</MenuItem>
+                  <MenuItem value={"09"}>กันยายน</MenuItem>
+                  <MenuItem value={"10"}>ตุลาคม</MenuItem>
+                  <MenuItem value={"11"}>พฤศจิกายน</MenuItem>
+                  <MenuItem value={"12"}>ธันวาคม</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl style={{ paddingTop: "10px" }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  //color="primary"
+                  size="small"
+                >
+                  ค้นหา
+                </Button>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </form>
+      </Paper>
+
       {isLoading ? (
         <LinearProgress />
       ) : (
@@ -132,95 +219,6 @@ const AdminReportTable = () => {
           title={TableTitle}
           actions={state.actions}
           options={state.options}
-          components={{
-            Toolbar: props => (
-              <div>
-                <MTableToolbar {...props} />
-                <form
-                  onSubmit={event => {
-                    if (values.year !== "0000" && values.month !== "00") {
-                      doFetch(
-                        `${apiUrl}/admin_reports/?year=${values.year}&month=${values.month}`
-                      );
-                    } else if (
-                      values.year !== "0000" &&
-                      values.month === "00"
-                    ) {
-                      doFetch(`${apiUrl}/admin_reports/?year=${values.year}`);
-                    } else if (
-                      values.year === "0000" &&
-                      values.month !== "00"
-                    ) {
-                      doFetch(`${apiUrl}/admin_reports/?month=${values.month}`);
-                    } else {
-                      doFetch(`${apiUrl}/admin_reports/`);
-                    }
-
-                    event.preventDefault();
-                  }}
-                >
-                  <Grid
-                    container
-                    style={{ paddingLeft: "25px", paddingBottom: "15px" }}
-                  >
-                    <Grid item xs={12} sm={3}>
-                      <FormControl className={classes.formControl}>
-                        {/* <InputLabel htmlFor="year">ปี</InputLabel> */}
-                        <Select
-                          value={values.year}
-                          onChange={handleChange}
-                          inputProps={{
-                            name: "year",
-                            id: "year"
-                          }}
-                        >
-                          <MenuItem value={"0000"}>ทั้งหมด</MenuItem>
-                          <MenuItem value={"2562"}>2562</MenuItem>
-                          <MenuItem value={"2563"}>2563</MenuItem>
-                          <MenuItem value={"2564"}>2564</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <FormControl className={classes.formControl}>
-                        {/* <InputLabel htmlFor="month">เดือน</InputLabel> */}
-                        <Select
-                          value={values.month}
-                          onChange={handleChange}
-                          inputProps={{
-                            name: "month",
-                            id: "month"
-                          }}
-                        >
-                          <MenuItem value={"00"}>ทั้งหมด</MenuItem>
-                          <MenuItem value={"01"}>มกราคม</MenuItem>
-                          <MenuItem value={"02"}>กุมภาพันธ์</MenuItem>
-                          <MenuItem value={"03"}>มีนาคม</MenuItem>
-                          <MenuItem value={"04"}>เมษายน</MenuItem>
-                          <MenuItem value={"05"}>พฤษภาคม</MenuItem>
-                          <MenuItem value={"06"}>มิถุนายน</MenuItem>
-                          <MenuItem value={"07"}>กรกฎาคม</MenuItem>
-                          <MenuItem value={"08"}>สิงหาคม</MenuItem>
-                          <MenuItem value={"09"}>กันยายน</MenuItem>
-                          <MenuItem value={"10"}>ตุลาคม</MenuItem>
-                          <MenuItem value={"11"}>พฤศจิกายน</MenuItem>
-                          <MenuItem value={"12"}>ธันวาคม</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <FormControl style={{ paddingTop: "10px" }}>
-                        <Button
-                          type="submit"
-                          variant="contained"
-                          //color="primary"
-                          size="small"
-                        >
-                          ค้นหา
-                        </Button>
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                </form>
-              </div>
-            )
-          }}
         />
       )}
     </Fragment>

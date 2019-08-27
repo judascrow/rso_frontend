@@ -3,6 +3,7 @@ import AssignmentIndIcon from "@material-ui/icons/AssignmentIndOutlined";
 import HomeIcon from "@material-ui/icons/HomeOutlined";
 import PeopleIcon from "@material-ui/icons/PeopleOutlined";
 import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedInOutlined";
+import ViewListOutlined from "@material-ui/icons/ViewListOutlined";
 
 const Menus = [
   {
@@ -36,7 +37,7 @@ const Menus = [
   {
     id: 5,
     text: "รายงานสำหรับส่วนกลาง",
-    icon: <AssignmentTurnedIn />,
+    icon: <ViewListOutlined />,
     path: "/admin_report",
     roleID: [1]
   }
