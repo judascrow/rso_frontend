@@ -39,6 +39,11 @@ const optionsType = [
   { value: 2, label: "ทำงาน 6 วัน/สัปดาห์" }
 ];
 
+const optionsRole = [
+  { value: 2, label: "ผู้ปฏิลัติงาน" },
+  { value: 1, label: "หัวหน้างาน" }
+];
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3, 2)
@@ -157,6 +162,7 @@ const CourtReportEdit = ({
                     court_report_id: cs.court_report_id,
                     sec_person_name: cs.sec_person_name,
                     type: cs.type,
+                    role: cs.role,
                     day_month_work: cs.day_month_work,
                     shuffle: cs.shuffle,
                     shuffle_date_name: cs.shuffle_date_name,
@@ -326,6 +332,9 @@ const CourtReportEdit = ({
                         <StyledTableCell align="center" width="200px">
                           ประเภท
                         </StyledTableCell>
+                        <StyledTableCell align="center" width="170px">
+                          ระดับ
+                        </StyledTableCell>
                         <StyledTableCell align="center" width="60px">
                           จำนวนวันที่มาทำงาน
                         </StyledTableCell>
@@ -388,6 +397,23 @@ const CourtReportEdit = ({
                                       defaultValue={optionsType[0]}
                                       value={optionsType.find(
                                         s => s.value === row.type
+                                      )}
+                                    />
+                                  </TableCell>
+
+                                  <TableCell>
+                                    <ReactSelect
+                                      name={`court_report_sec_persons[${i}].role`}
+                                      options={optionsRole}
+                                      onChange={value => {
+                                        setFieldValue(
+                                          `court_report_sec_persons[${i}].role`,
+                                          value.value
+                                        );
+                                      }}
+                                      defaultValue={optionsRole[0]}
+                                      value={optionsRole.find(
+                                        s => s.value === row.role
                                       )}
                                     />
                                   </TableCell>

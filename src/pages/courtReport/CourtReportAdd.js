@@ -38,6 +38,11 @@ const optionsType = [
   { value: 2, label: "ทำงาน 6 วัน/สัปดาห์" }
 ];
 
+const optionsRole = [
+  { value: 2, label: "ผู้ปฏิลัติงาน" },
+  { value: 1, label: "หัวหน้างาน" }
+];
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3, 2)
@@ -139,6 +144,7 @@ const CourtReportAdd = ({
               secPersons.data.map((secPerson, i) => ({
                 sec_person_name: secPerson.full_name,
                 type: 1,
+                role: 2,
                 day_month_work: 0,
                 shuffle: 0,
                 shuffle_date_name: "",
@@ -298,6 +304,9 @@ const CourtReportAdd = ({
                         <StyledTableCell align="center" width="200px">
                           ประเภท
                         </StyledTableCell>
+                        <StyledTableCell align="center" width="170px">
+                          ระดับ
+                        </StyledTableCell>
                         <StyledTableCell align="center" width="60px">
                           จำนวนวันที่มาทำงาน
                         </StyledTableCell>
@@ -358,6 +367,20 @@ const CourtReportAdd = ({
                                         );
                                       }}
                                       defaultValue={optionsType[0]}
+                                    />
+                                  </TableCell>
+
+                                  <TableCell>
+                                    <ReactSelect
+                                      name={`court_report_sec_persons[${i}].role`}
+                                      options={optionsRole}
+                                      onChange={value => {
+                                        setFieldValue(
+                                          `court_report_sec_persons[${i}].role`,
+                                          value.value
+                                        );
+                                      }}
+                                      defaultValue={optionsRole[0]}
                                     />
                                   </TableCell>
 

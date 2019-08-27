@@ -21,6 +21,8 @@ import CourtReportTable from "../pages/courtReport/CourtReportTable";
 import CourtReportAdd from "../pages/courtReport/CourtReportAdd";
 import CourtReportEdit from "../pages/courtReport/CourtReportEdit";
 
+import AdminReportTable from "../pages/adminReport/AdminReportTable";
+
 const useStyles = makeStyles(theme => ({
   paperRoot: {
     padding: theme.spacing(3, 2)
@@ -64,6 +66,11 @@ const Routes = ({ user }) => {
         <PrivateRoute
           path="/courtreport/edit/:id"
           component={CourtReportEdit}
+        />
+        <PrivateRoute
+          exact
+          path="/admin_report"
+          component={AdminRoute ? AdminReportTable : NotFound}
         />
         <Route component={NotFound} />
       </Switch>

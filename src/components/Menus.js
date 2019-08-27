@@ -32,6 +32,13 @@ const Menus = [
     icon: <AssignmentIndIcon />,
     path: "/secperson",
     roleID: [2]
+  },
+  {
+    id: 5,
+    text: "รายงานสำหรับส่วนกลาง",
+    icon: <AssignmentTurnedIn />,
+    path: "/admin_report",
+    roleID: [1]
   }
 ];
 
