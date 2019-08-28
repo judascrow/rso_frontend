@@ -22,7 +22,8 @@ const breadcrumbNameMap = {
   "/courtreport": "รายงานการตรวจรับฯ",
   "/courtreport/add": "เพิ่มข้อมูล",
   "/courtreport/edit": "แก้ไขข้อมูล",
-  "/admin_report": "รายงานส่วนกลาง"
+  "/admin_report": "รายงานส่วนกลาง",
+  "/admin_accept": "ตรวจสอบการส่งรายงานจากศาล"
 };
 
 const styles = theme => ({

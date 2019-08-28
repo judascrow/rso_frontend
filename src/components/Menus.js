@@ -4,6 +4,7 @@ import HomeIcon from "@material-ui/icons/HomeOutlined";
 import PeopleIcon from "@material-ui/icons/PeopleOutlined";
 import AssignmentTurnedIn from "@material-ui/icons/AssignmentTurnedInOutlined";
 import ViewListOutlined from "@material-ui/icons/ViewListOutlined";
+import CloudDownloadOutlined from "@material-ui/icons/CloudDownloadOutlined";
 
 const Menus = [
   {
@@ -36,6 +37,13 @@ const Menus = [
   },
   {
     id: 5,
+    text: "การส่งรายงานจากศาล",
+    icon: <CloudDownloadOutlined />,
+    path: "/admin_accept",
+    roleID: [1]
+  },
+  {
+    id: 6,
     text: "รายงานสำหรับส่วนกลาง",
     icon: <ViewListOutlined />,
     path: "/admin_report",

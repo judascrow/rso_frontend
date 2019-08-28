@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { patch } from "axios";
+import { patch, post } from "axios";
 
 import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
@@ -135,15 +135,18 @@ const CourtReportTable = ({
       {
         title: "สถานะการส่งรายงาน",
         field: "status",
-        lookup: { S: "ส่งเรียบร้อยแล้ว", W: "รอส่ง" },
+        lookup: {
+          A: "ลงรับแล้ว",
+          S: "ส่งรายงานแล้ว รอลงรับ",
+          W: "ยังไม่ได้ส่งรายงาน"
+        },
         render: rowData =>
-          rowData.status === "S" ? (
-            <Chip label="ส่งข้อมูลเรียบร้อยแล้ว" color="primary" size="small" />
+          rowData.status === "A" ? (
+            <Chip label="ลงรับแล้ว" color="secondary" size="small" />
+          ) : rowData.status === "S" ? (
+            <Chip label="ส่งรายงานแล้ว รอลงรับ" color="primary" size="small" />
           ) : (
-            <Chip
-              label="รอส่ง (กรุณากดปุ่มส่งเพื่ออัพโหลดเอกสาร)"
-              size="small"
-            />
+            <Chip label="ยังไม่ได้ส่งรายงาน" size="small" />
           )
       },
       {
@@ -168,26 +171,55 @@ const CourtReportTable = ({
       }
     ],
     actions: [
-      {
+      rowData => ({
         icon: "edit",
-        iconProps: { color: "primary" },
+        iconProps: { color: rowData.status === "A" ? "disabled" : "primary" },
         tooltip: "แก้ไขรายงาน",
-        onClick: (event, rowData) => onEdit(rowData)
-      },
+        onClick: (event, rowData) => onEdit(rowData),
+        disabled: rowData.status === "A"
+      }),
+
       rowData => ({
         icon: "printer",
-        iconProps: { color: "action" },
+        iconProps: { color: rowData.status === "A" ? "disabled" : "action" },
         tooltip: "ปริ้นเอกสาร",
-        onClick: (event, rowData) => console.log(JSON.stringify(rowData))
+        onClick: (event, rowData) => {
+          const config = {
+            responseType: "arraybuffer",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/pdf"
+            }
+          };
+          post(`http://10.8.22.11/project01/print.php`, rowData, config)
+            .then(response => {
+              const url = window.URL.createObjectURL(new Blob([response.data]));
+              const link = document.createElement("a");
+              link.href = url;
+              link.setAttribute(
+                "download",
+                rowData.court.court_code +
+                  "_" +
+                  rowData.year +
+                  rowData.month +
+                  ".pdf"
+              ); //or any other extension
+              document.body.appendChild(link);
+              link.click();
+            })
+            .catch(error => console.log(error));
+        },
+        disabled: rowData.status === "A"
       }),
       rowData => ({
         icon: "send",
-        iconProps: { color: "secondary" },
+        iconProps: { color: rowData.status === "A" ? "disabled" : "secondary" },
         tooltip: "ส่งรายงาน",
         onClick: async (event, rowData) => {
           await setOpen(true);
           await setData(rowData);
-        }
+        },
+        disabled: rowData.status === "A"
       }),
       rowData => ({
         icon: "picture_as_pdf",

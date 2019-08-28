@@ -21,6 +21,7 @@ import CourtReportTable from "../pages/courtReport/CourtReportTable";
 import CourtReportAdd from "../pages/courtReport/CourtReportAdd";
 import CourtReportEdit from "../pages/courtReport/CourtReportEdit";
 
+import AdminAcceptTable from "../pages/adminReport/AdminAcceptTable";
 import AdminReportTable from "../pages/adminReport/AdminReportTable";
 
 const useStyles = makeStyles(theme => ({
@@ -66,6 +67,11 @@ const Routes = ({ user }) => {
         <PrivateRoute
           path="/courtreport/edit/:id"
           component={CourtReportEdit}
+        />
+        <PrivateRoute
+          exact
+          path="/admin_accept"
+          component={AdminRoute ? AdminAcceptTable : NotFound}
         />
         <PrivateRoute
           exact
