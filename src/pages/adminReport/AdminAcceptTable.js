@@ -1,5 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { patch } from "axios";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import setAuthToken from "../../utils/setAuthToken";
 
 import MaterialTable from "material-table";
@@ -16,8 +19,9 @@ import Chip from "@material-ui/core/Chip";
 
 import { apiUrl, apiHost } from "../../config";
 
-import { useDataApi } from "../../components/FetchData";
 import { MonthOptionsList } from "../../components/DateComponents/DateOptionsList";
+
+import { getCourtReports } from "../../store/actions/courtReport";
 
 const useStyles = makeStyles(theme => ({
   titleIcon: {
@@ -39,19 +43,26 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const AdminAcceptTable = () => {
+const AdminAcceptTable = ({
+  getCourtReports,
+  courtReport: { courtReports, loading }
+}) => {
   const classes = useStyles();
-  const { data, isLoading, doFetch } = useDataApi(
-    `${apiUrl}/court_reports/?year=${new Date().getUTCFullYear() + 543}&month=${
-      MonthOptionsList[new Date().getUTCMonth() - 1].value
-    }`,
-    []
-  );
+  // const { doFetch } = useDataApi(
+  //   `${apiUrl}/court_reports/?year=${new Date().getUTCFullYear() + 543}&month=${
+  //     MonthOptionsList[new Date().getUTCMonth() - 1].value
+  //   }`,
+  //   []
+  // );
 
-  const [values, setValues] = React.useState({
+  const [values, setValues] = useState({
     year: new Date().getUTCFullYear() + 543,
     month: MonthOptionsList[new Date().getUTCMonth() - 1].value
   });
+
+  useEffect(() => {
+    getCourtReports(values.year, values.month);
+  }, [getCourtReports, values.year, values.month]);
 
   function handleChange(event) {
     setValues(oldValues => ({
@@ -77,9 +88,7 @@ const AdminAcceptTable = () => {
           rowData,
           config
         );
-        await doFetch(
-          `${apiUrl}/court_reports/?year=${values.year}&month=${values.month}&status=Z`
-        );
+        await getCourtReports(rowData.year, rowData.month);
       }
     } else if (rowData.status === "A") {
       var r = confirm("คุณต้องการยกเลิกการลงรับใช่หรือไม่ ?"); //eslint-disable-line
@@ -89,9 +98,7 @@ const AdminAcceptTable = () => {
           rowData,
           config
         );
-        await doFetch(
-          `${apiUrl}/court_reports/?year=${values.year}&month=${values.month}&status=`
-        );
+        await getCourtReports(rowData.year, rowData.month);
       }
     }
   };
@@ -127,7 +134,12 @@ const AdminAcceptTable = () => {
     actions: [
       rowData => ({
         icon: "picture_as_pdf",
-        iconProps: { color: rowData.status !== "S" && rowData.status !== "A" ? "disabled" : "error" },
+        iconProps: {
+          color:
+            rowData.status !== "S" && rowData.status !== "A"
+              ? "disabled"
+              : "error"
+        },
         tooltip: "Download เอกสาร",
         onClick: (event, rowData) =>
           window.open(`${apiHost}/files/${rowData.file_path}`, "_blank"),
@@ -172,17 +184,7 @@ const AdminAcceptTable = () => {
       <Paper className={classes.paperRoot}>
         <form
           onSubmit={event => {
-            if (values.year !== "0000" && values.month !== "00") {
-              doFetch(
-                `${apiUrl}/court_reports/?year=${values.year}&month=${values.month}`
-              );
-            } else if (values.year !== "0000" && values.month === "00") {
-              doFetch(`${apiUrl}/court_reports/?year=${values.year}`);
-            } else if (values.year === "0000" && values.month !== "00") {
-              doFetch(`${apiUrl}/court_reports/?month=${values.month}`);
-            } else {
-              doFetch(`${apiUrl}/court_reports/`);
-            }
+            getCourtReports(values.year, values.month);
 
             event.preventDefault();
           }}
@@ -245,18 +247,30 @@ const AdminAcceptTable = () => {
         </form>
       </Paper>
 
-      {isLoading ? (
-        <LinearProgress />
-      ) : (
+      {courtReports !== null && !loading ? (
         <MaterialTable
           columns={state.columns}
-          data={data.data}
+          data={courtReports.data}
           title={TableTitle}
           actions={state.actions}
           options={state.options}
         />
+      ) : (
+        <LinearProgress />
       )}
     </Fragment>
   );
 };
-export default AdminAcceptTable;
+
+AdminAcceptTable.propTypes = {
+  getCourtReports: PropTypes.func.isRequired,
+  courtReport: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  courtReport: state.courtReport
+});
+export default connect(
+  mapStateToProps,
+  { getCourtReports }
+)(withRouter(AdminAcceptTable));

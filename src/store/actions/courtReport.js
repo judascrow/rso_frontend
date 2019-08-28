@@ -11,7 +11,10 @@ import setAuthToken from "../../utils/setAuthToken";
 import { apiUrl } from "../../config";
 
 // Get SecPersons
-export const getCourtReports = () => async dispatch => {
+export const getCourtReports = (
+  year = "0000",
+  month = "00"
+) => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
@@ -22,8 +25,18 @@ export const getCourtReports = () => async dispatch => {
         "Content-Type": "application/x-www-form-urlencoded"
       }
     };
+    let url;
+    if (year !== "0000" && month !== "00") {
+      url = `${apiUrl}/court_reports/?year=${year}&month=${month}`;
+    } else if (year !== "0000" && month === "00") {
+      url = `${apiUrl}/court_reports/?year=${year}`;
+    } else if (year === "0000" && month !== "00") {
+      url = `${apiUrl}/court_reports/?month=${month}`;
+    } else {
+      url = `${apiUrl}/court_reports/`;
+    }
 
-    const res = await axios.get(`${apiUrl}/court_reports/`, config);
+    const res = await axios.get(url, config);
 
     dispatch({
       type: GET_COURT_REPORTS,
