@@ -25,6 +25,8 @@ import CourtReportEdit from "../pages/courtReport/CourtReportEdit";
 import AdminAcceptTable from "../pages/adminReport/AdminAcceptTable";
 import AdminReportTable from "../pages/adminReport/AdminReportTable";
 
+import Dashboard from "../pages/dashboard";
+
 const useStyles = makeStyles(theme => ({
   paperRoot: {
     padding: theme.spacing(3, 2)
@@ -46,7 +48,11 @@ const Routes = ({ user }) => {
     <div>
       <Switch>
         <Route exact path="/login" component={Login} />
-        <PrivateRoute exact path="/" component={Home} />
+        <PrivateRoute
+          exact
+          path="/"
+          component={AdminRoute ? Dashboard : Home}
+        />
         <PrivateRoute
           exact
           path="/user"
