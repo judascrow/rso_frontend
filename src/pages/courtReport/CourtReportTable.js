@@ -84,7 +84,13 @@ const CourtReportTable = ({
 
   const onChangeModal = e => {
     if (e.target.files[0].type === "application/pdf") {
-      setFile(e.target.files[0]);
+      if (e.target.files[0].size <= 5000000) {
+        setFile(e.target.files[0]);
+      } else {
+        alert("ขนาดไฟล์ต้องไม่เกิน 5 MB");
+        setFile(null);
+        e.target.value = "";
+      }
     } else {
       alert("อัพโหลดได้เฉพาะไฟล์ PDF เท่านั้น");
       setFile(null);
@@ -302,7 +308,7 @@ const CourtReportTable = ({
             autoFocus
           />
           <DialogContentText>
-            กรุณาอัพโหลดไฟล์เอกสารที่เกี่ยวข้อง
+            กรุณาอัพโหลดไฟล์เอกสารที่เกี่ยวข้อง (ขนาดไฟล์ต้องไม่เกิน 5 MB)
           </DialogContentText>
           <input type="file" name="file" onChange={onChangeModal} />
         </DialogContent>

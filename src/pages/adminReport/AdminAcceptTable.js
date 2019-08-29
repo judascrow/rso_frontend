@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import CloudDownloadOutlined from "@material-ui/icons/CloudDownloadOutlined";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
+//import Button from "@material-ui/core/Button";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Paper from "@material-ui/core/Paper";
@@ -114,6 +114,10 @@ const AdminAcceptTable = ({
         field: "court.name"
       },
       {
+        title: "สังกัด",
+        field: "court.department_name"
+      },
+      {
         title: "สถานะการส่งรายงาน",
         field: "status",
         lookup: {
@@ -151,9 +155,12 @@ const AdminAcceptTable = ({
           color:
             rowData.status !== "S" && rowData.status !== "A"
               ? "disabled"
+              : rowData.status === "A"
+              ? "error"
               : "primary"
         },
-        tooltip: "ลงรับเอกสาร",
+        tooltip:
+          rowData.status !== "A" ? "ลงรับเอกสาร" : "ยกเลิกการลงรับเอกสาร",
         onClick: (event, rowData) => onAccept(rowData),
         disabled: rowData.status !== "S" && rowData.status !== "A"
       })
@@ -168,7 +175,8 @@ const AdminAcceptTable = ({
       },
       padding: "dense",
       exportButton: true,
-      exportFileName: "data"
+      exportFileName: "data",
+      grouping: true
     }
   });
 
@@ -182,13 +190,7 @@ const AdminAcceptTable = ({
   return (
     <Fragment>
       <Paper className={classes.paperRoot}>
-        <form
-          onSubmit={event => {
-            getCourtReports(values.year, values.month);
-
-            event.preventDefault();
-          }}
-        >
+        <form>
           <Grid container>
             <Grid item xs={12} sm={12}>
               <FormControl className={classes.formControl}>
@@ -232,7 +234,7 @@ const AdminAcceptTable = ({
                   <MenuItem value={"12"}>ธันวาคม</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl style={{ paddingTop: "10px" }}>
+              {/* <FormControl style={{ paddingTop: "10px" }}>
                 <Button
                   type="submit"
                   variant="contained"
@@ -241,7 +243,7 @@ const AdminAcceptTable = ({
                 >
                   ค้นหา
                 </Button>
-              </FormControl>
+              </FormControl> */}
             </Grid>
           </Grid>
         </form>

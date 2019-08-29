@@ -27,7 +27,7 @@ import {
 import BootstrapInput from "../../components/BootstrapInput";
 
 import { Formik, Field, Form, FieldArray } from "formik";
-// import * as Yup from "yup";
+import * as Yup from "yup";
 
 import { createCourtReport } from "../../store/actions/courtReport";
 import { getSecPersons } from "../../store/actions/secPerson";
@@ -39,7 +39,7 @@ const optionsType = [
 ];
 
 const optionsRole = [
-  { value: 2, label: "ผู้ปฏิลัติงาน" },
+  { value: 2, label: "ผู้ปฏิบัติงาน" },
   { value: 1, label: "หัวหน้างาน" }
 ];
 
@@ -68,14 +68,31 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-// const SignupSchema = Yup.object().shape({
-//   work_7day: Yup.number()
-//     .min(0, "จำนวนวันต้องไม่น้อยกว่า 0 วัน")
-//     .max(31, "จำนวนวันต้องไม่เกิน 31 วัน"),
-//   work_6day: Yup.number()
-//     .min(0, "จำนวนวันต้องไม่น้อยกว่า 0 วัน")
-//     .max(31, "จำนวนวันต้องไม่เกิน 31 วัน")
-// });
+const SignupSchema = Yup.object().shape({
+  reporter_name: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+  reporter_position: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+  inspector_name: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+  inspector_position: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required")
+
+  // work_7day: Yup.number()
+  //   .min(0, "จำนวนวันต้องไม่น้อยกว่า 0 วัน")
+  //   .max(31, "จำนวนวันต้องไม่เกิน 31 วัน"),
+  // work_6day: Yup.number()
+  //   .min(0, "จำนวนวันต้องไม่น้อยกว่า 0 วัน")
+  //   .max(31, "จำนวนวันต้องไม่เกิน 31 วัน")
+});
 
 /* table sec_person */
 const StyledTableCell = withStyles(theme => ({
@@ -145,8 +162,11 @@ const CourtReportAdd = ({
                 sec_person_name: secPerson.full_name,
                 type: 1,
                 role: 2,
-                day_month_work: 0,
+                day_month_work: GetTotalDayFromMonth(
+                  new Date().getUTCMonth() - 1
+                ),
                 shuffle: 0,
+                shuffle_except: 0,
                 shuffle_date_name: "",
                 shuffle_Absence: 0,
                 shuffle_Absence_date: "",
@@ -155,7 +175,7 @@ const CourtReportAdd = ({
                 remark: ""
               }))
           }}
-          // validationSchema={SignupSchema}
+          validationSchema={SignupSchema}
           onSubmit={(values, { setSubmitting }) => {
             setSubmitting(false);
             var r = confirm("คุณต้องการบันทึกข้อมูลใช่หรือไม่ ? "); //eslint-disable-line
@@ -248,6 +268,11 @@ const CourtReportAdd = ({
                     autoComplete="off"
                     fullWidth
                   />
+                  {errors.reporter_name && touched.reporter_name ? (
+                    <Typography variant="caption" color="error">
+                      {errors.reporter_name}
+                    </Typography>
+                  ) : null}
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <Field
@@ -260,6 +285,11 @@ const CourtReportAdd = ({
                     autoComplete="off"
                     fullWidth
                   />
+                  {errors.reporter_position && touched.reporter_position ? (
+                    <Typography variant="caption" color="error">
+                      {errors.reporter_position}
+                    </Typography>
+                  ) : null}
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <Field
@@ -272,6 +302,11 @@ const CourtReportAdd = ({
                     autoComplete="off"
                     fullWidth
                   />
+                  {errors.inspector_name && touched.inspector_name ? (
+                    <Typography variant="caption" color="error">
+                      {errors.inspector_name}
+                    </Typography>
+                  ) : null}
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <Field
@@ -284,6 +319,11 @@ const CourtReportAdd = ({
                     autoComplete="off"
                     fullWidth
                   />
+                  {errors.inspector_position && touched.inspector_position ? (
+                    <Typography variant="caption" color="error">
+                      {errors.inspector_position}
+                    </Typography>
+                  ) : null}
                 </Grid>
                 <Grid item xs={12}>
                   <Table className={classes.table} size="small">
@@ -427,7 +467,12 @@ const CourtReportAdd = ({
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,
-                                        max: 31,
+                                        max:
+                                          values.work_7day -
+                                          values.court_report_sec_persons[i]
+                                            .day_month_work -
+                                          values.court_report_sec_persons[i]
+                                            .shuffle_Absence,
                                         step: 1
                                       }}
                                       hiddenlabel="true"
@@ -448,7 +493,9 @@ const CourtReportAdd = ({
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,
-                                        max: 31,
+                                        max:
+                                          values.court_report_sec_persons[i]
+                                            .shuffle,
                                         step: 1
                                       }}
                                       hiddenlabel="true"
@@ -486,7 +533,12 @@ const CourtReportAdd = ({
                                       inputProps={{
                                         maxLength: 2,
                                         min: 0,
-                                        max: 31,
+                                        max:
+                                          values.work_7day -
+                                          values.court_report_sec_persons[i]
+                                            .day_month_work -
+                                          values.court_report_sec_persons[i]
+                                            .shuffle,
                                         step: 1
                                       }}
                                       hiddenlabel="true"

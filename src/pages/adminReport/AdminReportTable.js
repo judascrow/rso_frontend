@@ -61,8 +61,19 @@ const AdminReportTable = () => {
     columns: [
       {
         title: "สถานที่ปฏิบัติงาน",
-        field: "court_name"
+        field: "court_name",
+        headerStyle: {
+          width: "200px"
+        }
       },
+      {
+        title: "สังกัด",
+        field: "department_name",
+        headerStyle: {
+          width: "250px"
+        }
+      },
+
       {
         title: "12 ชม./7 วัน (หัวหน้า)",
         field: "type_7day_boss",
@@ -106,7 +117,10 @@ const AdminReportTable = () => {
       },
       {
         title: "เลขที่หนังสือ",
-        field: "doc_no"
+        field: "doc_no",
+        headerStyle: {
+          width: "150px"
+        }
       }
     ],
     options: {
@@ -119,7 +133,8 @@ const AdminReportTable = () => {
       },
       padding: "dense",
       exportButton: true,
-      exportFileName: "data"
+      exportFileName: "data",
+      grouping: true
     }
   });
 
@@ -137,9 +152,7 @@ const AdminReportTable = () => {
           onSubmit={event => {
             if (values.year !== "0000" && values.month !== "00") {
               doFetch(
-                `${apiUrl}/admin_reports/?year=${values.year}&month=${
-                  values.month
-                }`
+                `${apiUrl}/admin_reports/?year=${values.year}&month=${values.month}`
               );
             } else if (values.year !== "0000" && values.month === "00") {
               doFetch(`${apiUrl}/admin_reports/?year=${values.year}`);

@@ -40,7 +40,7 @@ const optionsType = [
 ];
 
 const optionsRole = [
-  { value: 2, label: "ผู้ปฏิลัติงาน" },
+  { value: 2, label: "ผู้ปฏิบัติงาน" },
   { value: 1, label: "หัวหน้างาน" }
 ];
 
@@ -165,6 +165,7 @@ const CourtReportEdit = ({
                     role: cs.role,
                     day_month_work: cs.day_month_work,
                     shuffle: cs.shuffle,
+                    shuffle_except: cs.shuffle_except,
                     shuffle_date_name: cs.shuffle_date_name,
                     shuffle_Absence: cs.shuffle_Absence,
                     shuffle_Absence_date: cs.shuffle_Absence_date,

@@ -198,6 +198,8 @@ const Layout = props => {
           <Typography className={classes.MenuFooterUser} variant="caption">
             {user && user.username}
             <br />
+            {user && user.courtName}
+            <br />
             <span className={classes.circle} /> {"Online"}
           </Typography>
         </Toolbar>
